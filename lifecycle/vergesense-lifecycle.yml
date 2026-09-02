@@ -1,0 +1,107 @@
+generated: '2026-09-02'
+method: searched
+source: https://vergesense.readme.io/reference/reference-getting-started
+sources:
+- https://vergesense.readme.io/reference/reference-getting-started
+- https://headwayapp.co/vergesense-changelog/
+- https://www.vergesense.com/legal
+- openapi/vergesense-api-openapi.json
+
+versioning:
+  published: true
+  scheme: date
+  format: YYYY-MM-DD
+  header: vs-version
+  current_version: '2019-04-17'
+  spec_info_version: '2021-03-29'
+  pinning: consumer is pinned to the newest version at the time of its first request
+  version_list: https://headwayapp.co/vergesense-changelog/
+  source: https://vergesense.readme.io/reference/reference-getting-started
+  inconsistency: >-
+    The versioning page states "This document is for version 2017-06-14. The current version of the
+    API is 2019-04-17", while the published OpenAPI declares info.version 2021-03-29. Three version
+    strings, no single authoritative version endpoint.
+
+deprecation_policy:
+  published: true
+  strength: informal
+  mechanism: >-
+    VergeSense commits in its documentation to publishing "new endpoints, improvements, and
+    deprecations" through its public changelog, and it does so in practice: "Deprecating Space Type
+    Attributes" was published 2026-03-04 with a stated removal date.
+  policy_url: https://vergesense.readme.io/reference/reference-getting-started
+  changelog_url: https://headwayapp.co/vergesense-changelog/
+  rss: https://headwayapp.co/vergesense-changelog/rss
+  sunset_header: not documented
+  deprecation_header: not documented
+  rfc8594: false
+  minimum_notice_period: not published
+  gap: >-
+    The commitment is to ANNOUNCE deprecations, not to honor a minimum notice window, and no RFC 8594
+    Sunset or Deprecation response header is emitted. A machine consumer has to poll an RSS feed to
+    learn that an endpoint it depends on is going away.
+  observed_deprecations:
+  - title: Deprecating Space Type Attributes
+    date: '2026-03-04'
+    url: https://headwayapp.co/vergesense-changelog/deprecating-space-type-attributes-333231
+  - title: Changing ID format for Hourly Building and Hourly Floor Metrics
+    date: '2025-01-17'
+    breaking: true
+    url: https://headwayapp.co/vergesense-changelog/changing-id-format-for-hourly-building-and-hourly-floor-metrics-307956
+  - title: ID format updated in Metrics Spaces API
+    date: '2024-11-12'
+    breaking: true
+    url: https://headwayapp.co/vergesense-changelog/id-format-updated-in-metrics-spaces-api-304406
+
+deprecated_operations:
+  derived_from: openapi/vergesense-api-openapi.json
+  count: 0
+  note: >-
+    No operation in the published OpenAPI carries deprecated: true, including the space-type
+    attributes the changelog announced as deprecating in March 2026. The spec and the changelog
+    disagree, and a client reading only the machine-readable contract would not see the deprecation.
+
+status_page:
+  published: false
+  probes:
+  - url: https://status.vergesense.com
+    result: NXDOMAIN
+  - url: https://trust.vergesense.com
+    result: NXDOMAIN
+  note: >-
+    No public status page, no statuspage.io/Atlassian/Instatus tenant, and no uptime component in the
+    documentation. NO StatusPage pointer is emitted in apis.yml — the absence is the finding.
+
+sla:
+  published: true
+  form: pdf
+  documents:
+  - name: VergeSense Standard Support Service Level Agreement (SLA)
+    url: https://www.vergesense.com/hubfs/VergeSense%20Standard%20Support%20Service%20Level%20Agreement%20(SLA)%20.pdf
+  - name: VergeSense Standard Support Policy
+    url: https://www.vergesense.com/hubfs/VergeSense%20Standard%20Support%20Policy.pdf
+  - name: VergeSense Service Subscription Agreement
+    url: https://www.vergesense.com/hubfs/VergeSense%20Service%20Subscription%20Agreement.pdf
+  index: https://www.vergesense.com/legal
+  note: >-
+    Support and SLA commitments are published as PDFs on the legal page rather than as web pages or
+    machine-readable terms. Uptime targets were not extracted — the PDFs were listed, not parsed.
+
+support:
+  channel: https://support.vergesense.com/hc/en-us
+  platform: Zendesk
+  email: support@vergesense.com
+  note: >-
+    The help centre returns HTTP 403 to a non-browser user agent (an ordinary Zendesk bot policy),
+    not a dead link. It is also the gate for API credentials — see authentication/.
+
+changelog:
+  primary: https://headwayapp.co/vergesense-changelog/
+  rss: https://headwayapp.co/vergesense-changelog/rss
+  secondary: https://vergesense.readme.io/changelog
+  detail: changelog/vergesense-changelog.yml
+
+end_of_life:
+  policy_published: false
+  note: No published API end-of-life or long-term-support policy.
+checked: '2026-09-02'

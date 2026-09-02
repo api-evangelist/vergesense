@@ -1,0 +1,44 @@
+generated: '2026-09-02'
+method: searched
+source: https://www.vergesense.com/
+plan_count: 0
+pricing_published: false
+model: enterprise contact-sales
+currency: null
+summary: >-
+  VergeSense publishes NO pricing of any kind. There is no /pricing page, no plan or tier comparison,
+  no per-sensor or per-square-foot list price, no free tier and no API metering schedule. The whole
+  commercial funnel is a sales conversation: "Talk to a specialist", "Get a demo", and a Strategic
+  Advisory Services / Managed Services track. This is consistent with the product — a deployment
+  requires physical sensor hardware installed in a customer's buildings — but it means an agent or a
+  buyer cannot price the API without contacting sales, and no Pricing pointer is emitted in apis.yml
+  because the page it would point at does not exist.
+plans: []
+probes:
+- {url: 'https://www.vergesense.com/pricing', status: 404}
+- {url: 'https://www.vergesense.com/', status: 200, note: 'navigation carries /demo and /talk-to-a-specialist; no pricing link anywhere'}
+- {url: 'https://vergesense.readme.io/llms.txt', status: 200, note: 'documentation index lists no pricing or plans page'}
+sales_entry_points:
+- {name: Get a demo, url: 'https://www.vergesense.com/demo'}
+- {name: Talk to a specialist, url: 'https://www.vergesense.com/talk-to-a-specialist'}
+- {name: Managed Services, url: 'https://www.vergesense.com/managed-services'}
+- {name: Strategic Advisory Services, url: 'https://www.vergesense.com/strategic-advisory-services'}
+api_access_gate:
+  self_serve: false
+  detail: >-
+    API credentials are not self-serve either. The Getting Started page instructs prospective
+    developers to email support@vergesense.com to request a VergeSense Developer account before a key
+    can be generated, so both the commercial and the technical door are staffed.
+  source: https://vergesense.readme.io/reference/reference-getting-started
+commercial_terms:
+  published: true
+  form: pdf
+  documents:
+  - {name: VergeSense Service Subscription Agreement, url: 'https://www.vergesense.com/hubfs/VergeSense%20Service%20Subscription%20Agreement.pdf'}
+  - {name: Terms and Conditions for POC Orders, url: 'https://www.vergesense.com/hubfs/Terms%20and%20Conditions%20for%20POC%20Orders.pdf'}
+  - {name: Terms and Conditions for NFR Orders, url: 'https://www.vergesense.com/hubfs/Terms%20and%20Conditions%20for%20NFR%20Orders.pdf'}
+  index: https://www.vergesense.com/legal
+  note: >-
+    Contract terms are public even though prices are not — including separate terms for proof-of-
+    concept and not-for-resale orders, which tells a buyer the pilot motion exists.
+checked: '2026-09-02'

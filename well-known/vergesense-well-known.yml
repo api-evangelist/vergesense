@@ -1,0 +1,139 @@
+generated: '2026-09-02'
+method: probed
+source: live probes of /.well-known/ on every VergeSense host named in apis.yml and the OpenAPI servers[]
+summary: >-
+  One real document is served, and it is served on two hosts: the RFC 9728 OAuth 2.0 Protected
+  Resource Metadata for the remote MCP server, which names https://vergesense.auth0.com/ as the
+  authorization server. That is a genuine WellKnown hit and the pointer is earned. Nothing else is
+  served anywhere: no security.txt on any host (so NO SecurityTxt pointer), no api-catalog, no
+  ai-plugin.json, no OIDC discovery on a VergeSense-operated host, and no A2A agent card.
+pointer_basis: >-
+  WellKnown pointer emitted on the strength of the 200s on
+  mcp.vergesense.com/.well-known/oauth-protected-resource/mcp and the identical document served at
+  api.vergesense.com. SecurityTxt pointer NOT emitted — RFC 9116 is unimplemented on every host.
+  AgentCard pointer NOT emitted — /.well-known/agent-card.json and the legacy /.well-known/agent.json
+  404 on every host probed.
+false_positive_watch: >-
+  www.vergesense.com is a HubSpot CMS site that answers every unknown path — including every
+  /.well-known/* path — with HTTP 404 and a 90KB HTML 404 page, so there is no soft-200 trap there.
+  api.vergesense.com returns a zero-length text/html 404 for unknown paths. Neither host was credited
+  with a document it does not serve.
+hosts:
+- host: https://mcp.vergesense.com
+  documents:
+  - path: /.well-known/oauth-protected-resource/mcp
+    status: 200
+    content_type: application/json
+    file: vergesense-mcp-oauth-protected-resource.json
+    rfc: RFC 9728
+    discovered_via: 'WWW-Authenticate: Bearer resource_metadata=... on an anonymous POST to /mcp'
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    file: vergesense-mcp-oauth-protected-resource.json
+    note: identical body to the /mcp-suffixed path
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.vergesense.com
+  documents:
+  - path: /.well-known/oauth-protected-resource/mcp
+    status: 200
+    content_type: application/json
+    file: vergesense-mcp-oauth-protected-resource.json
+    note: >-
+      api.vergesense.com and mcp.vergesense.com resolve to the same Cloudflare origin and both serve
+      the MCP protected-resource document.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.azure.vergesense.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.vergesense.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+    note: >-
+      llms.txt is NOT on the marketing host. It is served by the documentation host at
+      https://vergesense.readme.io/llms.txt (HTTP 200) and saved to llms/vergesense-llms.txt.
+- host: https://vergesense.readme.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 200
+    content_type: text/plain
+    file: ../llms/vergesense-llms.txt
+related:
+- host: https://vergesense.auth0.com
+  operator: Auth0 (Okta) tenant operated for VergeSense — named as the authorization server in the
+    MCP protected-resource document above, not a VergeSense-owned origin.
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: vergesense-auth0-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+checked: '2026-09-02'

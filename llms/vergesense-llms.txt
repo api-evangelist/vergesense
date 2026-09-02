@@ -1,0 +1,38 @@
+# VergeSense Documentation
+
+> VergeSense API for programmatically interacting with the VergeSense Cloud platform.
+
+Append .md to any documentation page URL to get its markdown version.
+
+## API Reference
+- [/metrics/aggregate/portfolio](https://vergesense.readme.io/reference/get_metricsaggregateportfolio.md): Portfolio level metrics across every building you can access, aggregated over the selected time period.
+- [/metrics/aggregate/buildings](https://vergesense.readme.io/reference/metricsaggregatebuildings.md): Building level metrics, aggregated over the selected time period.
+- [/metrics/aggregate/floors](https://vergesense.readme.io/reference/get_metricsaggregatefloors.md): Floor level metrics, aggregated over the selected time period.
+- [/metrics/aggregate/space_types](https://vergesense.readme.io/reference/get_metricsaggregatespacetypes.md): Space type level metrics for one floor, aggregated over the selected time period.
+- [/metrics/aggregate/space_groups](https://vergesense.readme.io/reference/get_metricsaggregatespacegroups.md): Space group level metrics for one floor, aggregated over the selected time period.
+- [/metrics/aggregate/neighborhoods](https://vergesense.readme.io/reference/get_metricsaggregateneighborhoods.md): Neighborhood level metrics, aggregated over the selected time period.
+- [/metrics/aggregate/spaces](https://vergesense.readme.io/reference/metrics.md): Metrics for all spaces in a building, or company
+- [/metrics/aggregate/spaces/:space_id](https://vergesense.readme.io/reference/get_metricsaggregatespace.md): Space level metrics, aggregated over the selected time period.
+- [/metrics/hourly/spaces](https://vergesense.readme.io/reference/metrics_hourly_spaces.md): Hourly metrics for spaces
+- [/metrics/hourly/floors](https://vergesense.readme.io/reference/metrics_hourly_floors.md): Hourly metrics for floors
+- [/metrics/hourly/buildings](https://vergesense.readme.io/reference/metrics_hourly_buildings.md): Hourly metrics for floors
+- [/metrics/hourly/neighborhoods](https://vergesense.readme.io/reference/metrics-hourly-neighborhoods.md): Hourly metrics for neighborhoods
+- [/metrics/spaces](https://vergesense.readme.io/reference/metrics_spaces.md): Metrics for spaces aggregated by the requested interval
+- [/buildings](https://vergesense.readme.io/reference/buildings-1.md): Get a list of buildings that VergeSense has data on.
+- [/spaces](https://vergesense.readme.io/reference/spaces-1.md): Get the most recent sensor reports for spaces.
+- [/spaces/detections](https://vergesense.readme.io/reference/spaces_detections.md): Fetch all detections for spaces on a given day. Response conforms to the JSON API spec https://jsonapi.org/. Responses are limited to `10,000` detections after which pagination will take place.
+- [Webhooks](https://vergesense.readme.io/reference/web-hooks.md)
+- [Event Types](https://vergesense.readme.io/reference/events.md)
+- [/webhooks](https://vergesense.readme.io/reference/webhooks-1.md): Create a webhook.
+- [/hardware/sensors](https://vergesense.readme.io/reference/hardware_sensors.md): Fetch all sensors.Response conforms to the JSON API spec https://jsonapi.org/.Responses are limited to `1,000` sensors after which pagination will take place.
+- [/hardware/gateways](https://vergesense.readme.io/reference/hardware_gateways.md): Fetch all gateways. Response conforms to the JSON API spec https://jsonapi.org/.Responses are limited to `1,000` gateway after which pagination will take place.
+- [Predict API](https://vergesense.readme.io/reference/predict-api.md): Ground trust from data, not assumptions.
+- [Predict Space Usage](https://vergesense.readme.io/reference/predict-space-usage.md): Given a geojson of spaces on a floor, this endpoint would return the predicted number of people using these spaces when the requested number of people are attempting to use the spaces provided.
+- [Predict Space Shortage](https://vergesense.readme.io/reference/predict-space-shortage.md): Given a geojson of spaces on a floor, this endpoint would return the predicted number of people in attendance at which point a meaningful number of people would be unable to find a space to work.
+- [Predict Normalized Space Type Distribution](https://vergesense.readme.io/reference/predict-normalized-space-type-distribution.md): Returns occupancy distribution histograms for spaces on a floor, grouped by normalized space type and capacity tier.
+- [Predict API GeoJSON](https://vergesense.readme.io/reference/predict-api-geojson.md)
+
+## Changelog
+- [New PIR Triggered Webhook](https://vergesense.readme.io/changelog/new-pir-triggered-webhook.md)
+- [Wired Sensor Duplicate Zero-Count Report Filtering](https://vergesense.readme.io/changelog/wired-sensor-duplicate-zero-count-report-filtering.md)
+- [Welcome to VergeSense](https://vergesense.readme.io/changelog/welcome-to-vergesense.md)

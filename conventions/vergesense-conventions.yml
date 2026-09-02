@@ -1,0 +1,241 @@
+generated: '2026-09-02'
+method: searched
+source: https://vergesense.readme.io/reference/reference-getting-started
+sources:
+- https://vergesense.readme.io/reference/reference-getting-started
+- https://vergesense.readme.io/reference/links
+- https://vergesense.readme.io/reference/events
+- openapi/vergesense-api-openapi.json
+
+authentication:
+  style: api-key-header
+  header: vs-api-key
+  transport: https-only (http:// requests are rejected)
+  failure_status: 403
+  detail: authentication/vergesense-authentication.yml
+
+versioning:
+  scheme: date
+  format: YYYY-MM-DD
+  header: vs-version
+  current_version: '2019-04-17'
+  spec_info_version: '2021-03-29'
+  pinning: >-
+    The version is pinned per API consumer on FIRST REQUEST — VergeSense records the most recent
+    version at that moment and holds the consumer there. A client may override per request with the
+    vs-version header.
+  note: >-
+    The documentation page carrying this policy still says "This document is for version 2017-06-14"
+    and names 2019-04-17 as current, while info.version in the published OpenAPI reads 2021-03-29.
+    Three different version strings are in play across the provider's own surfaces; a client cannot
+    tell from the docs which one a fresh key will be pinned to.
+  version_list: https://headwayapp.co/vergesense-changelog/
+  source: https://vergesense.readme.io/reference/reference-getting-started
+
+pagination:
+  style: jsonapi
+  spec: https://jsonapi.org/
+  params:
+  - 'page[number]'
+  - 'page[size]'
+  response_fields:
+  - links.next
+  - links.previous
+  semantics: >-
+    links.next and links.previous are relative URL strings or null, e.g.
+    /spaces/thresholds/crossings?date=2021-10-29&page[number]=2&page[size]=3
+  applies_to:
+  - /spaces/detections
+  - /spaces/thresholds/crossings
+  - /hardware/sensors
+  - /hardware/gateways
+  caps: see rate-limits/vergesense-rate-limits.yml (10,000 detections; 1,000 sensors; 1,000 gateways)
+  source: https://vergesense.readme.io/reference/links
+
+timestamps:
+  format: ISO 8601
+  request: 'both offset and Z accepted, e.g. 2019-01-15T23:30:28-08:00 and 2019-01-15T23:30:28Z'
+  response: ISO 8601 UTC, e.g. 2019-01-15T23:30:28Z
+  source: https://vergesense.readme.io/reference/reference-getting-started
+
+filtering:
+  style: query-parameters
+  common_params:
+  - building_id
+  - building_ref_id
+  - floor_id
+  - space_id
+  - neighborhood_id
+  - start_timestamp
+  - end_timestamp
+  - date
+  note: >-
+    Filters are the provider's published remedy for the 30-second request timeout on the metrics
+    endpoints, so they are load-bearing rather than optional.
+
+identifiers:
+  dual_scheme: >-
+    Every spatial object carries BOTH a VergeSense-internal numeric identifier (space_id,
+    building_id, floor_id) and a customer-defined reference identifier (space_ref_id,
+    building_ref_id, floor_ref_id) supplied at provisioning time. Webhook payloads and REST
+    responses both carry the pair, which is what lets a customer join VergeSense data to its own
+    IWMS/CAFM records without a mapping table.
+  see_also: data-model/vergesense-data-model.yml
+
+field_expansion:
+  supported: false
+  note: No expand / include / fields[] sparse-fieldset parameter is documented, despite JSON:API pagination.
+
+metadata:
+  custom_metadata_supported: false
+  note: >-
+    No arbitrary key/value metadata bag on any resource. The customer-defined *_ref_id fields are the
+    only customer-controlled identifiers.
+
+request_id_tracing:
+  documented: false
+  observed_header: x-request-id
+  note: >-
+    api.vergesense.com and mcp.vergesense.com return an x-request-id header (observed on an
+    unauthenticated 401 from the MCP host), but the documentation never names it, never tells a
+    client to log it, and never tells support to ask for it. It is present but not contracted.
+
+error_envelope:
+  format: plain json
+  rfc9457: false
+  detail: errors/vergesense-problem-types.yml
+
+rate_limit_signaling:
+  headers_documented: false
+  limit: 120 requests/minute per source IP
+  status: 429
+  retry_after: not documented
+  detail: rate-limits/vergesense-rate-limits.yml
+
+idempotency:
+  supported: false
+  grade: none
+  header: null
+  scope: null
+  retention: null
+  assessment: >-
+    VergeSense publishes NO idempotency mechanism, and this is a real (small) gap rather than an
+    inapplicable one: the API is not read-only. Five write operations exist —
+    POST /webhooks, PATCH /webhooks/{id}, DELETE /webhooks/{id}, POST /webhooks/{id}/enable and
+    POST /webhooks/{id}/disable — and a retried POST /webhooks after an ambiguous timeout will
+    create a duplicate subscription that then double-delivers every space event to the customer's
+    receiver. The three POST /predict/* operations are computational and side-effect-free, so they
+    are naturally idempotent and are not at risk. There is no idempotency key, no request
+    fingerprinting and no documented dedupe window.
+  na_reason: null
+  not_na_because: >-
+    This is graded `none`, not `na`. `na` would say the API has no write surface; it has five writes.
+    No Idempotency pointer is emitted in apis.yml, because emitting one would assert a mechanism this
+    provider does not publish.
+  source: openapi/vergesense-api-openapi.json (no Idempotency-Key parameter on any operation)
+
+dry_run_mode:
+  supported: partial
+  grade: documented
+  mechanism: GET /webhooks/setup
+  detail: >-
+    There is no generic dry-run flag. There is one rehearsal affordance: GET /webhooks/setup returns
+    the configuration options available for a webhook before one is created, which lets an agent
+    validate its intended subscription shape without creating anything. Nothing equivalent exists for
+    PATCH or DELETE.
+  source: openapi/vergesense-api-openapi.json
+
+reversibility:
+  grade: verified
+  applicable: true
+  assessment: >-
+    Every write on this API is on the webhook-subscription surface, and every one of them is
+    reversible by an inverse operation exposed in the same contract. Two of the four reversal paths
+    carry a provider-stated window; the rest are unbounded, which for a configuration resource is the
+    safe direction. Nothing on this API moves money or destroys measurement data — the sensor and
+    metrics surface is read-only — so the blast radius of an agent's mistake is a duplicated or
+    missing event stream, not an irrecoverable state change.
+  write_surfaces:
+  - operation: POST /webhooks
+    operationId: webhooks-1
+    action: create a webhook subscription
+    reversal: DELETE /webhooks/{id}
+    reversal_operationId: webhooksid-1
+    window: unbounded — a subscription can be deleted at any time
+    window_stated: true
+    grade: verified
+    caveat: >-
+      Deletion removes the subscription but does not un-send events already delivered. Because there
+      is no idempotency key, a retried create leaves a duplicate that must be found via GET /webhooks
+      and deleted individually.
+    source: openapi/vergesense-api-openapi.json
+  - operation: POST /webhooks/{id}/disable
+    operationId: webhooksiddisable
+    action: stop delivery on an existing subscription
+    reversal: POST /webhooks/{id}/enable
+    reversal_operationId: webhooksidenable
+    window: unbounded — a disabled webhook can be re-enabled at any time
+    window_stated: true
+    grade: verified
+    note: >-
+      This is the reversible alternative to DELETE and the one an agent should prefer: it is a
+      perfectly symmetric pair, it preserves the subscription's configuration and id, and it is the
+      same mechanism VergeSense itself uses when it auto-disables a failing endpoint.
+    source: openapi/vergesense-api-openapi.json
+  - operation: POST /webhooks/{id}/enable
+    operationId: webhooksidenable
+    action: resume delivery
+    reversal: POST /webhooks/{id}/disable
+    reversal_operationId: webhooksiddisable
+    window: unbounded
+    window_stated: true
+    grade: verified
+    source: openapi/vergesense-api-openapi.json
+  - operation: PATCH /webhooks/{id}
+    operationId: webhooksid
+    action: modify an existing subscription (URL, events, auth, send frequency)
+    reversal: PATCH /webhooks/{id} with the prior values
+    reversal_operationId: webhooksid
+    window: unbounded, BUT requires the caller to have kept the prior state
+    window_stated: false
+    grade: documented
+    caveat: >-
+      There is no version history, no revision id and no restore endpoint on a webhook. An agent that
+      patches without first reading GET /webhooks cannot roll back, because the previous
+      configuration is not recoverable from the API.
+    source: openapi/vergesense-api-openapi.json
+  - operation: DELETE /webhooks/{id}
+    operationId: webhooksid-1
+    action: permanently delete a subscription
+    reversal: none — no restore or undelete endpoint exists
+    reversal_operationId: null
+    window: none
+    window_stated: true
+    grade: verified
+    caveat: >-
+      This is the one irreversible write on the API. A deleted webhook must be recreated from scratch
+      with POST /webhooks, and it will receive a new id, so any downstream reference to the old id
+      breaks. Agents should disable rather than delete.
+    source: openapi/vergesense-api-openapi.json
+  provider_initiated_reversal:
+    event: automatic webhook disable
+    trigger: '>99% of deliveries fail within a 24-hour period'
+    window: 24 hours
+    reversal: >-
+      The subscriber is emailed with the top errors and re-enables via POST /webhooks/{id}/enable
+      once the receiver is fixed. The subscription is disabled, never deleted, so nothing is lost.
+    window_stated: true
+    source: https://vergesense.readme.io/reference/events
+  read_only_surface:
+  - /buildings, /spaces, /sensors, /hardware/*, /metrics/* — 28 GET operations with no write
+    counterpart and therefore nothing to reverse.
+  - /predict/* — 3 POSTs that compute a forecast from a supplied GeoJSON and persist nothing.
+
+cross_links:
+  errors: errors/vergesense-problem-types.yml
+  lifecycle: lifecycle/vergesense-lifecycle.yml
+  authentication: authentication/vergesense-authentication.yml
+  rate_limits: rate-limits/vergesense-rate-limits.yml
+  data_model: data-model/vergesense-data-model.yml
+  webhooks: asyncapi/vergesense-webhooks.yml
+checked: '2026-09-02'

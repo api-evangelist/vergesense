@@ -1,0 +1,148 @@
+generated: '2026-09-02'
+method: searched
+source: https://vergesense.readme.io/reference/events
+sources:
+- https://vergesense.readme.io/reference/events
+- https://vergesense.readme.io/reference/web-hooks
+- openapi/vergesense-api-openapi.json
+- https://headwayapp.co/vergesense-changelog/
+
+asyncapi_published: false
+asyncapi_probe:
+  note: >-
+    No AsyncAPI document is published anywhere. /asyncapi.yaml, /asyncapi.json and an event-catalog
+    path were not served on api.vergesense.com, api.azure.vergesense.com or vergesense.readme.io, and
+    the llms.txt documentation index lists no event specification. NOTHING WAS FABRICATED: this file
+    is the documented webhook catalogue transcribed from the provider's own event reference, not a
+    generated AsyncAPI. It carries type Webhooks, not type AsyncAPI.
+
+summary: >-
+  Webhooks are the provider's PREFERRED integration path, not an afterthought — the Getting Started
+  page states outright that webhooks are the preferred way to get a stream of real-time data and that
+  the REST API is for historical pulls. The subscription surface is fully self-service through the
+  API (8 of the 36 operations manage webhooks) as well as through the VergeSense UI, and a subscriber
+  can point the same event stream at several endpoints (dev / QA / staging / production).
+
+transport: https
+method: POST
+delivery: at-least-once (no delivery guarantee published)
+signing:
+  supported: false
+  note: >-
+    There is NO payload signature (no HMAC, no signing secret, no timestamp-signature header). A
+    receiver authenticates VergeSense by whatever credential it configured on the subscription, plus
+    optionally an IP allow-list. See authentication/vergesense-authentication.yml.
+
+events:
+- name: space_report
+  event_type: space_report
+  description: >-
+    Emitted whenever there is updated information about a space. Configurable to fire only on change
+    when the raw volume is too high (the Send Frequency option, added 2024-04-12).
+  payload_shape: object
+  fields:
+  - {name: building_ref_id, type: string, note: 'customer-defined building reference ID'}
+  - {name: floor_ref_id, type: 'string|null', note: 'customer-defined floor reference ID'}
+  - {name: space_ref_id, type: 'string|null', note: 'customer-defined space reference ID'}
+  - {name: space_id, type: number, note: 'VergeSense internal space identifier'}
+  - {name: event_type, type: string, const: space_report}
+  - {name: timestamp, type: string, format: iso8601}
+  - {name: person_count, type: number, note: 'number of people in the space'}
+  - {name: signs_of_life, type: boolean, note: 'objects such as laptops, backpacks or coats detected'}
+  - {name: motion_detected, type: 'boolean|null'}
+  - {name: people.count, type: number}
+  - {name: people.coordinates, type: array, note: 'array of arrays of [x,y] coordinate pairs, one per person detected by a device'}
+  - {name: sensor_ids, type: 'array<string>', note: 'device IDs reporting on the space'}
+  - {name: environment.humidity, type: object, note: 'optional; units RH'}
+  - {name: environment.iaq, type: object, note: 'optional; indoor air quality, units UBA'}
+  - {name: environment.temperature, type: object, note: 'optional; units C'}
+  - {name: environment.sensor, type: string, note: 'device id that reported environmental data'}
+  - {name: environment.timestamp, type: string, format: iso8601}
+  conditional_fields: >-
+    The environment block is present only when the reporting device supports environmental sensing;
+    it is omitted entirely otherwise, rather than sent as null.
+  source: https://vergesense.readme.io/reference/events
+- name: space_availability
+  event_type: space_availability
+  description: >-
+    Emitted when the AVAILABILITY of a space changes, as distinct from every new sensor report. The
+    payload is an ARRAY — one record per space the reporting sensor covers.
+  payload_shape: array
+  fields:
+  - {name: building_ref_id, type: string}
+  - {name: floor_ref_id, type: string}
+  - {name: space_ref_id, type: string}
+  - {name: space_id, type: number}
+  - {name: sensor_ids, type: 'array<string>'}
+  - {name: event_type, type: string, const: space_availability}
+  - {name: timestamp, type: string, format: iso8601}
+  - {name: state, type: string, enum: [available, occupied]}
+  - {name: passively_occupied, type: 'boolean|null', added: '2024-02-07'}
+  source: https://vergesense.readme.io/reference/events
+- name: motion_detected
+  event_type: motion_detected
+  description: >-
+    Emitted when motion is detected in a previously empty space. Payload is an array. Supported only
+    on L208 and L410 sensors — L302 sensors use a different motion-detection mechanism and do not
+    emit it.
+  payload_shape: array
+  fields:
+  - {name: building_ref_id, type: string}
+  - {name: floor_ref_id, type: string}
+  - {name: space_ref_id, type: string}
+  - {name: timestamp, type: string, format: iso8601}
+  - {name: event_type, type: string, const: motion_detected}
+  hardware_constraint: L208 and L410 only
+  source: https://vergesense.readme.io/reference/events
+- name: pir_triggered
+  event_type: unknown
+  description: >-
+    A PIR-triggered webhook announced on the ReadMe changelog ("New PIR Triggered Webhook"). The
+    event_type string and payload shape are NOT stated on the /reference/events page, so they are
+    recorded as unknown rather than guessed.
+  payload_shape: unknown
+  fields: []
+  source: https://vergesense.readme.io/changelog/new-pir-triggered-webhook
+
+subscription_management:
+  self_service: true
+  ui: true
+  api_operations:
+  - {operationId: webhooks-1, http: POST /webhooks, action: create a webhook}
+  - {operationId: webhooks, http: GET /webhooks, action: list webhooks}
+  - {operationId: webhookssetup, http: GET /webhooks/setup, action: 'read the configuration options available before creating one'}
+  - {operationId: webhooksid, http: 'PATCH /webhooks/{id}', action: modify a webhook}
+  - {operationId: webhooksid-1, http: 'DELETE /webhooks/{id}', action: delete a webhook}
+  - {operationId: webhooksidenable, http: 'POST /webhooks/{id}/enable', action: enable delivery}
+  - {operationId: webhooksiddisable, http: 'POST /webhooks/{id}/disable', action: disable delivery}
+  - {operationId: webhooksidlogs, http: 'GET /webhooks/{id}/logs', action: read delivery logs}
+  fan_out: >-
+    Multiple webhooks may send the same data to different endpoints — the docs explicitly suggest
+    separate development, QA, staging (load testing) and production receivers.
+
+receiver_requirements:
+- Data is only delivered to HTTPS endpoints.
+- The receiver must respond with a 2xx status code.
+- The receiver must respond within 5 seconds.
+
+failure_handling:
+  auto_disable_threshold: '>99% of deliveries failing within a 24-hour period'
+  auto_disable_action: VergeSense disables the webhook automatically
+  notification: email to the subscriber listing the top errors
+  recovery: fix the receiver, then POST /webhooks/{id}/enable
+  observability: GET /webhooks/{id}/logs
+  source: https://vergesense.readme.io/reference/events
+
+security:
+  authentication_optional: true
+  supported_methods: [basic, bearer, custom-header, oauth2]
+  ip_allow_list: available on request, list not published
+  detail: authentication/vergesense-authentication.yml
+
+gaps:
+- No AsyncAPI document, so the event catalogue is not machine-readable.
+- No payload signature or shared secret — receiver-side verification relies on transport auth only.
+- No documented retry schedule or backoff before the 24-hour auto-disable threshold.
+- The PIR-triggered event is announced in a changelog but absent from the event reference.
+- Payload shapes are inconsistent across events (space_report is an object, the other two are arrays).
+checked: '2026-09-02'

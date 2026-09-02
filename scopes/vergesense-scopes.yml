@@ -1,0 +1,55 @@
+generated: '2026-09-02'
+method: probed
+source: https://vergesense.auth0.com/.well-known/openid-configuration
+docs: https://vergesense.readme.io/reference/reference-getting-started
+summary: >-
+  The VergeSense REST API has NO OAuth scopes — it is authenticated with a single static header key
+  and authorized by a building selection made when the key is created. The only scope vocabulary
+  anywhere in the estate belongs to the Auth0 tenant that guards the remote MCP server, and it is the
+  stock OIDC/Auth0 set rather than a VergeSense-defined product permission model.
+rest_api:
+  oauth2: false
+  scopes: []
+  authorization_model: building-scoped API key
+  detail: >-
+    An API key is bound at creation to a selected set of buildings, editable afterwards under
+    Integrations > Details. There is no per-endpoint, per-resource or read/write distinction — a key
+    that can read metrics can also create, patch and delete webhooks. An agent holding a VergeSense
+    key holds every capability the API exposes for its buildings.
+  source: https://vergesense.readme.io/reference/reference-getting-started
+mcp_authorization_server:
+  issuer: https://vergesense.auth0.com/
+  discovery: https://vergesense.auth0.com/.well-known/openid-configuration
+  protected_resource: https://mcp.vergesense.com/mcp
+  scopes_supported:
+  - {name: openid, description: OIDC authentication}
+  - {name: profile, description: basic profile claims}
+  - {name: offline_access, description: refresh-token issuance}
+  - {name: email, description: email address claim}
+  - {name: email_verified, description: email verification state claim}
+  - {name: name, description: full name claim}
+  - {name: given_name, description: given name claim}
+  - {name: family_name, description: family name claim}
+  - {name: nickname, description: nickname claim}
+  - {name: picture, description: profile picture claim}
+  - {name: created_at, description: account creation timestamp claim}
+  - {name: identities, description: linked identity claim}
+  - {name: phone, description: phone number claim}
+  - {name: address, description: address claim}
+  grant_types_supported:
+  - authorization_code
+  - client_credentials
+  - refresh_token
+  - 'urn:ietf:params:oauth:grant-type:device_code'
+  - 'urn:ietf:params:oauth:grant-type:token-exchange'
+  dynamic_client_registration: https://vergesense.auth0.com/oidc/register
+  caveat: >-
+    Every scope above is an Auth0 platform default identity scope. NONE is a VergeSense product
+    permission — there is no vergesense:read, no metrics:read, no webhooks:write. Whatever
+    authorization the MCP server applies to its tools is either audience-based or internal, and is
+    not discoverable anonymously.
+gaps:
+- No product scope vocabulary on either surface.
+- No read-only credential option for the REST API — every key is full-capability for its buildings.
+- No published scope reference page.
+checked: '2026-09-02'

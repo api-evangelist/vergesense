@@ -1,0 +1,167 @@
+generated: '2026-09-02'
+method: derived
+source: openapi/vergesense-api-openapi.json
+sources:
+- openapi/vergesense-api-openapi.json
+- https://vergesense.readme.io/reference/reference-getting-started
+- https://vergesense.readme.io/reference/events
+format: jsonapi-errors
+rfc9457: false
+media_type: application/json
+
+summary: >-
+  VergeSense does NOT use RFC 9457 problem+json, but it is not unstructured either: the error
+  envelope is the JSON:API errors object, and the published OpenAPI carries a worked error example on
+  almost every 400 and 404. That makes the failure modes genuinely machine-readable even though the
+  spec declares no error schema. What is missing is a stable error CODE — the discriminator is the
+  human-readable `title` string, and 403, 409 and 429 are documented only in prose and never appear
+  in the contract at all.
+
+envelope:
+  shape: '{"errors": [ { "status": "<http status as string>", "title": "<short reason>", "detail": "<human explanation>", "source": { "parameter": "<offending query parameter>" } } ]}'
+  spec: 'JSON:API v1.x errors object — https://jsonapi.org/format/#errors'
+  fields:
+  - {name: errors, type: array, required: true}
+  - {name: 'errors[].status', type: string, note: 'HTTP status repeated as a STRING, e.g. "400"'}
+  - {name: 'errors[].title', type: string, note: 'short reason, e.g. Invalid Parameter, Floor not found'}
+  - {name: 'errors[].detail', type: string, note: 'human explanation, often naming the offending value'}
+  - {name: 'errors[].source.parameter', type: string, note: 'the query parameter at fault; present on parameter-validation 400s only'}
+  code_field:
+    present: false
+    note: >-
+      JSON:API defines an optional `code` member for an application-specific error code. VergeSense
+      does not emit it. A client must branch on `title` prose, which is not a stable contract.
+  inconsistency:
+    detail: >-
+      One operation breaks the envelope. GET /buildings/{building_ref_id}/history documents its 400
+      as {"errors": ["Cannot exceed maximum time range of 24hrs"]} — an array of bare STRINGS rather
+      than of error objects. A parser written against the documented envelope will throw on that
+      endpoint. GET /buildings documents its 400 as an empty object {}.
+    affected:
+    - buildingsbuilding_ref_idhistory
+    - buildings-1
+    source: openapi/vergesense-api-openapi.json
+
+problem_types:
+- status: 400
+  title: Invalid Parameter
+  detail_examples:
+  - 'Invalid Date (source.parameter: filter[local_date])'
+  - 'Invalid Date (source.parameter: date)'
+  - 'Invalid Date (source.parameter: start_at)'
+  - 'Timestamp order incorrect (source.parameter: filter[timestamp])'
+  remediation: >-
+    Read source.parameter, fix that one query parameter, and resend. Timestamps must be ISO 8601 and
+    ranges must be ordered start-before-end.
+  declared_in_openapi: true
+  example_in_openapi: true
+  operations: [metrics_hourly_spaces, metrics_hourly_floors, metrics_hourly_buildings, 'metrics-hourly-neighborhoods', spaces_thresholds_crossings, webhooksidlogs, metrics_spaces]
+- status: 400
+  title: Missing or invalid filter parameters
+  detail_examples:
+  - 'Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.'
+  remediation: >-
+    The aggregate metrics endpoints require BOTH ends of the date filter. Supplying only one is a
+    400, not an open-ended range.
+  declared_in_openapi: true
+  example_in_openapi: true
+  operations: ['get_metricsaggregatebuildings{building_id}']
+- status: 400
+  title: Maximum time range exceeded
+  detail_examples:
+  - 'Cannot exceed maximum time range of 24hrs'
+  remediation: >-
+    Building history is capped at a 24-hour window per request. Page by day. NOTE the envelope
+    deviation on this operation — errors[] holds bare strings here.
+  declared_in_openapi: true
+  example_in_openapi: true
+  operations: [buildingsbuilding_ref_idhistory]
+- status: 403
+  title: Forbidden
+  detail: Caused by a missing HTTP header or an invalid API token.
+  remediation: >-
+    Send the vs-api-key header on every request. VergeSense returns 403, not 401, for a missing
+    credential, a bad one, and a key not scoped to the requested building, and sends no
+    WWW-Authenticate challenge — so an agent cannot tell the three apart from the response.
+  declared_in_openapi: false
+  example_in_openapi: false
+  source: https://vergesense.readme.io/reference/reference-getting-started
+- status: 404
+  title: '<Entity> not found'
+  detail_examples:
+  - 'No floor was found with id 88412.'
+  - 'No space was found with id 1902445.'
+  - 'No neighborhood was found with id 44219.'
+  - 'No space group was found for zone id 88412-7552.'
+  - 'No space type was found for zone id 88412-open_focus.'
+  remediation: >-
+    The path or zone identifier does not resolve. Re-resolve it from /buildings, /spaces or
+    /spaces/types rather than retrying. Note the composite zone-id form (<floor_id>-<zone>) used by
+    the space_groups and space_types aggregates.
+  declared_in_openapi: true
+  example_in_openapi: true
+  operations: [get_metricsaggregatefloors, get_metricsaggregatespace, get_metricsaggregateneighborhoods, get_metricsaggregatespacegroups, get_metricsaggregatespacetypes]
+- status: 409
+  title: Conflict
+  detail: The request conflicts with another request.
+  remediation: >-
+    Documented in prose only and never elaborated. Because there is no idempotency key, a client
+    cannot tell a conflicting retry from a genuine conflict — treat it as terminal, re-read state,
+    and decide again.
+  declared_in_openapi: false
+  example_in_openapi: false
+  source: https://vergesense.readme.io/reference/reference-getting-started
+- status: 429
+  title: Too Many Requests
+  detail: >-
+    Too many requests in a given period. The published limit is 120 requests/minute per source IP
+    across most endpoints.
+  remediation: >-
+    Back off exponentially. No Retry-After and no RateLimit-* header is returned, so the interval has
+    to be guessed.
+  declared_in_openapi: false
+  example_in_openapi: false
+  see_also: rate-limits/vergesense-rate-limits.yml
+  source: https://vergesense.readme.io/reference/reference-getting-started
+- status: null
+  title: Request timeout (server-side cutoff)
+  detail: API requests are cut off after 30 seconds.
+  remediation: >-
+    The provider's published remedy is to narrow the result set with filters rather than to retry.
+    The status code returned on cutoff is NOT published — only the 30-second ceiling is — so it is
+    recorded here as unknown rather than guessed.
+  declared_in_openapi: false
+  example_in_openapi: false
+  source: https://vergesense.readme.io/reference/reference-getting-started
+
+coverage:
+  operations_total: 36
+  operations_declaring_400: 33
+  operations_declaring_404: 5
+  operations_declaring_no_error_response: 3
+  operations_with_no_error_response_list: [post_predict-space-usage, post_predict-space-shortage, post_predict-normalized-space-type-distribution]
+  note: >-
+    The three Predict API operations declare a 200 and nothing else, so a client has no documented
+    failure shape for a malformed GeoJSON on the newest surface in the product.
+
+webhook_delivery_errors:
+  note: Failure semantics in the OUTBOUND direction, for the customer's receiver.
+  expectations:
+  - Data is only sent to HTTPS endpoints.
+  - The receiver must respond with a 2xx status code.
+  - The receiver must respond within 5 seconds.
+  auto_disable: >-
+    If more than 99% of deliveries fail within a 24-hour window VergeSense automatically disables the
+    webhook and emails the subscriber with the top errors; the subscriber fixes the receiver and
+    re-enables with POST /webhooks/{id}/enable.
+  delivery_log: GET /webhooks/{id}/logs
+  source: https://vergesense.readme.io/reference/events
+
+gaps:
+- No RFC 9457 problem+json.
+- No stable application error code — JSON:API's optional `code` member is never emitted, so clients branch on prose titles.
+- No error SCHEMA in the OpenAPI; the envelope is only knowable from response examples.
+- Two operations deviate from the envelope (bare strings, and an empty object).
+- 403, 409 and 429 are documented in prose but absent from the contract entirely.
+- The Predict API declares no error responses at all.
+checked: '2026-09-02'

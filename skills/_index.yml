@@ -1,0 +1,52 @@
+generated: '2026-09-02'
+method: generated
+source: openapi/vergesense-api-openapi.json + https://vergesense.readme.io/
+name: VergeSense Agent Skills
+description: >-
+  Packaged Agent Skills for the VergeSense occupancy intelligence API. Every operationId referenced
+  below was read out of openapi/vergesense-api-openapi.json — none is invented. Provider-published
+  skills were searched for first (no AGENTS.md, no skills manifest, no MCP tool reference is
+  published by VergeSense), so these are generated from the real contract plus the provider's own
+  documented conventions.
+provider_published_skills:
+  found: false
+  probed:
+  - {url: 'https://vergesense.readme.io/llms.txt', status: 200, note: 'documentation index lists API reference and changelog pages only — no skills or AGENTS.md'}
+  - {url: 'https://www.vergesense.com/llms.txt', status: 404}
+skills:
+- name: vergesense-portfolio-utilization-report
+  file: vergesense-portfolio-utilization-report.md
+  category: analytics
+  writes: false
+  operations: [get_metricsaggregateportfolio, buildings-1, 'get_metricsaggregatebuildings{building_id}', get_metricsaggregatefloors, get_metricsaggregatespacetypes, get_metricsaggregatespacegroups]
+  summary: Portfolio-down utilization reporting, drilling from portfolio totals into the space types driving them.
+- name: vergesense-manage-event-webhook
+  file: vergesense-manage-event-webhook.md
+  category: integration
+  writes: true
+  operations: [webhookssetup, webhooks, webhooks-1, webhooksid, webhooksidenable, webhooksiddisable, webhooksidlogs, webhooksid-1]
+  summary: >-
+    The full webhook subscription lifecycle, written around the two hazards this API actually has —
+    no idempotency key on create, and an irreversible delete.
+  safety_notes:
+  - No idempotency key — never blind-retry POST /webhooks.
+  - DELETE is irreversible; prefer disable/enable.
+  - PATCH has no rollback; read GET /webhooks first.
+- name: vergesense-predict-space-demand
+  file: vergesense-predict-space-demand.md
+  category: forecasting
+  writes: false
+  operations: [post_predict-space-usage, post_predict-space-shortage, post_predict-normalized-space-type-distribution, get_metricsaggregatefloors, space_types]
+  summary: >-
+    Large Spatial Model forecasting for a floor — predicted usage, the attendance at which spaces run
+    out, and demand distribution by normalized space type and capacity tier.
+shared_conventions:
+  auth: 'vs-api-key header on every request; 403 on failure; https only'
+  rate_limit: 120 requests/minute per source IP; 429 with no Retry-After
+  timeout: 30 seconds
+  pagination: 'JSON:API — page[number], page[size], links.next, links.previous'
+  timestamps: ISO 8601, returned as UTC Z
+  versioning: 'vs-version header, YYYY-MM-DD'
+  detail: ../conventions/vergesense-conventions.yml
+  errors: ../errors/vergesense-problem-types.yml
+checked: '2026-09-02'

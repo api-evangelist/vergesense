@@ -1,0 +1,114 @@
+generated: '2026-09-02'
+method: searched
+source: https://vergesense.readme.io/reference/reference-getting-started
+sources:
+- https://vergesense.readme.io/reference/reference-getting-started
+- https://vergesense.readme.io/reference/events
+- openapi/vergesense-api-openapi.json
+- https://mcp.vergesense.com/.well-known/oauth-protected-resource/mcp
+- https://vergesense.auth0.com/.well-known/openid-configuration
+summary:
+  types:
+  - apiKey
+  - oauth2
+  api_key_in:
+  - header
+  note: >-
+    Two distinct authentication surfaces. The REST/Analytics API at api.vergesense.com is
+    API-key only (single header, no OAuth, no scopes). The remote MCP server at
+    mcp.vergesense.com is OAuth 2.0 bearer, delegated to the VergeSense Auth0 tenant and
+    advertised per RFC 9728.
+
+schemes:
+- name: sec0
+  type: apiKey
+  in: header
+  parameter: vs-api-key
+  surface: rest
+  required: true
+  applies_to: every operation in openapi/vergesense-api-openapi.json (36 operations)
+  transport: https only — requests to http:// are rejected
+  failure_status: 403
+  failure_reason: missing vs-api-key header or invalid API token
+  sources:
+  - openapi/vergesense-api-openapi.json
+  - https://vergesense.readme.io/reference/reference-getting-started
+
+- name: mcp-oauth
+  type: oauth2
+  surface: mcp
+  resource: https://mcp.vergesense.com/mcp
+  authorization_servers:
+  - https://vergesense.auth0.com/
+  bearer_methods_supported:
+  - header
+  discovery: https://mcp.vergesense.com/.well-known/oauth-protected-resource/mcp
+  rfc: RFC 9728 (OAuth 2.0 Protected Resource Metadata)
+  authorization_endpoint: https://vergesense.auth0.com/authorize
+  token_endpoint: https://vergesense.auth0.com/oauth/token
+  registration_endpoint: https://vergesense.auth0.com/oidc/register
+  dynamic_client_registration: true
+  method: probed
+  probed: '2026-09-02'
+  note: >-
+    An anonymous POST of tools/list to https://mcp.vergesense.com/mcp returns HTTP 401 with
+    WWW-Authenticate: Bearer resource_metadata="https://mcp.vergesense.com/.well-known/oauth-protected-resource/mcp".
+    The live tool schemas are therefore auth-gated and were not read.
+
+key_management:
+  issuance: >-
+    Not self-serve. The docs instruct prospective developers to contact support@vergesense.com to
+    request a VergeSense Developer account; keys are then generated inside the VergeSense Cloud app.
+  console_path: Settings > API Keys > Generate API Key
+  key_naming: an API Token Name is required at creation
+  scoping: >-
+    An API key is scoped to a selected set of buildings at creation, and the building selection can
+    be edited afterwards from Integrations > Details. This is the only authorization granularity the
+    REST API exposes — there are no OAuth scopes or per-endpoint permissions.
+  rotation: >-
+    Self-service rotation is published: Integrations > Details > Rotate generates a new API key.
+    The docs recommend periodic rotation and rotation on suspected compromise.
+  visibility: the key can be revealed in-app via Integrations > Details > Show
+  source: https://vergesense.readme.io/reference/reference-getting-started
+
+environments:
+- name: AWS (default)
+  base_url: https://api.vergesense.com
+- name: Azure
+  base_url: https://api.azure.vergesense.com
+  note: >-
+    Alternate deployment for Azure-hosted tenants. The published OpenAPI declares only the AWS host
+    in servers[]; the Azure host is documented in prose on the Getting Started page.
+
+outbound_webhook_authentication:
+  note: >-
+    Distinct from inbound API auth — this is how VergeSense authenticates ITSELF to a customer's
+    webhook receiver. Authentication is optional but recommended by the provider.
+  methods:
+  - technique: Basic access authentication
+    header: 'Basic: [base64(username:password)]'
+    configurable_in_ui: true
+  - technique: Bearer token
+    header: 'Bearer: [token]'
+    configurable_in_ui: true
+  - technique: Custom header
+    header: any key:value pair
+    configurable_in_ui: true
+  - technique: OAuth 2.0
+    header: 'Bearer: [token] (after retrieving a token from the configured token URL)'
+    configurable_in_ui: false
+    reference: https://headwayapp.co/vergesense-changelog/bearer-token-authorization-webhook-support-137616
+  ip_allow_list:
+    available: true
+    self_serve: false
+    note: >-
+      VergeSense sends webhook requests from a known set of source IP addresses and will share the
+      list on request; it is not published in the documentation.
+  source: https://vergesense.readme.io/reference/events
+
+gaps:
+- No OAuth 2.0 or OIDC on the REST API — a single long-lived header key is the only credential.
+- No published scope or permission vocabulary for the REST API; authorization is building-level only.
+- No self-serve signup for API credentials; an email to support@vergesense.com gates access.
+- No documented key expiry or automatic rotation policy.
+- MCP tool schemas cannot be introspected anonymously.

@@ -1,0 +1,182 @@
+generated: '2026-09-02'
+method: derived
+source: openapi/vergesense-api-openapi.json
+sources:
+- openapi/vergesense-api-openapi.json
+- https://vergesense.readme.io/reference/events
+- https://vergesense.readme.io/reference/links
+derivation_note: >-
+  The published OpenAPI declares NO components.schemas — every response body is inlined per
+  operation. This graph is therefore derived from path structure, path/query parameter names, the
+  documented webhook payload fields and the operation descriptions, not from named $refs. Cardinality
+  is inferred from the aggregation hierarchy the metrics endpoints expose (portfolio -> building ->
+  floor -> space, with neighborhoods, space groups and space types as floor-level groupings).
+
+identifier_scheme:
+  dual: true
+  internal:
+  - building_id
+  - floor_id
+  - space_id
+  - neighborhood_id
+  customer_defined:
+  - building_ref_id
+  - floor_ref_id
+  - space_ref_id
+  note: >-
+    Every spatial entity carries both a VergeSense-assigned numeric id and a customer-supplied
+    reference id set at provisioning. Both appear in REST responses and in every webhook payload,
+    which is what allows a customer to join VergeSense data to its own IWMS/CAFM without maintaining
+    a mapping table. Sensors and gateways use device ids (e.g. VS0-123) plus MAC addresses instead.
+  prefixes_documented: false
+
+entities:
+- name: Portfolio
+  description: The full set of buildings a given API key can see. Not addressable as a resource.
+  operations: [get_metricsaggregateportfolio]
+  relationships:
+  - {kind: has_many, target: Building, via: api key building scope}
+- name: Building
+  description: A physical building. Carries a timezone (IANA name, added 2024-05-07).
+  operations: [buildings-1, buildings-2, buildingsbuilding_ref_idhistory, 'get_metricsaggregatebuildings{building_id}', metrics_hourly_buildings]
+  identifiers: [building_id, building_ref_id]
+  relationships:
+  - {kind: has_many, target: Floor, via: building_id}
+  - {kind: has_many, target: Space, via: building_id}
+  - {kind: has_many, target: Sensor, via: building_id}
+  - {kind: has_many, target: Gateway, via: building_id}
+- name: Floor
+  description: A level within a building; the unit the Predict API operates on.
+  operations: [get_metricsaggregatefloors, metrics_hourly_floors]
+  identifiers: [floor_id, floor_ref_id]
+  relationships:
+  - {kind: belongs_to, target: Building, via: building_id}
+  - {kind: has_many, target: Space, via: floor_id}
+  - {kind: has_many, target: Neighborhood, via: floor_id}
+  - {kind: has_many, target: SpaceGroup, via: floor_id}
+- name: Space
+  description: >-
+    The core measured unit — a desk, meeting room, collaboration area or other bounded area covered
+    by one or more sensors.
+  operations: [spaces-1, get_metricsaggregatespace, metrics, metrics_spaces, metrics_hourly_spaces]
+  identifiers: [space_id, space_ref_id]
+  relationships:
+  - {kind: belongs_to, target: Floor, via: floor_id}
+  - {kind: belongs_to, target: Building, via: building_id}
+  - {kind: belongs_to, target: SpaceType, via: space type assignment}
+  - {kind: belongs_to, target: Neighborhood, via: neighborhood_id}
+  - {kind: has_many, target: Sensor, via: sensor_ids}
+  - {kind: has_many, target: Detection, via: space_id}
+  - {kind: has_many, target: SpaceReport, via: space_id}
+- name: SpaceType
+  description: >-
+    A classification of spaces (the "normalized space type" the Predict API groups by). Several of
+    its attributes were announced as deprecated effective 2026-04-01.
+  operations: [space_types, get_metricsaggregatespacetypes]
+  relationships:
+  - {kind: has_many, target: Space, via: space type assignment}
+  deprecation: see lifecycle/vergesense-lifecycle.yml
+- name: SpaceGroup
+  description: A floor-level grouping of spaces used for aggregate reporting.
+  operations: [get_metricsaggregatespacegroups]
+  relationships:
+  - {kind: belongs_to, target: Floor, via: floor_id}
+  - {kind: has_many, target: Space, via: grouping}
+- name: Neighborhood
+  description: A named zone on a floor, typically assigned to a team or business unit.
+  operations: [get_metricsaggregateneighborhoods, metrics-hourly-neighborhoods]
+  identifiers: [neighborhood_id]
+  relationships:
+  - {kind: belongs_to, target: Floor, via: floor_id}
+  - {kind: has_many, target: Space, via: neighborhood_id}
+- name: Sensor
+  description: >-
+    A VergeSense device. Published model families include area sensors (L208, L302, L410), wired
+    entryway/area sensors (E104, E105, E106) and entryway threshold devices (EN1).
+  operations: [hardware_sensors, sensors-1, sensorsstate, sensorshistory]
+  identifiers: [sensor id (e.g. VS0-123), MAC address]
+  pagination: JSON:API, capped at 1,000 per response
+  relationships:
+  - {kind: belongs_to, target: Building, via: building_id}
+  - {kind: has_many, target: Space, via: coverage — one sensor may report on several spaces}
+  - {kind: belongs_to, target: Gateway, via: connectivity}
+- name: Gateway
+  description: The network gateway that backhauls sensor traffic.
+  operations: [hardware_gateways]
+  pagination: JSON:API, capped at 1,000 per response
+  relationships:
+  - {kind: belongs_to, target: Building, via: building_id}
+  - {kind: has_many, target: Sensor, via: connectivity}
+- name: Detection
+  description: >-
+    An individual people/object detection event for a space on a given day. JSON:API paginated and
+    capped at 10,000 per response; filterable with filter[count][gt].
+  operations: [spaces_detections]
+  relationships:
+  - {kind: belongs_to, target: Space, via: space_id}
+- name: ThresholdCrossing
+  description: An entryway crossing recorded by an EN1 threshold device, queried by date.
+  operations: [spaces_thresholds_crossings]
+  pagination: 'JSON:API — page[number] / page[size], links.next / links.previous'
+  relationships:
+  - {kind: belongs_to, target: Space, via: space_id}
+  - {kind: belongs_to, target: Building, via: building_id}
+- name: Metric
+  description: >-
+    A computed occupancy measure. Two shapes: hourly time series (spaces, floors, buildings,
+    neighborhoods) and aggregates over a selected period (portfolio, buildings, floors, space types,
+    space groups, neighborhoods, spaces). Known measure fields include person_count,
+    average_person_count and average_person_count_when_used (rounded to 2 dp since 2024-12-04).
+  operations: [metrics_hourly_spaces, metrics_hourly_floors, metrics_hourly_buildings, metrics-hourly-neighborhoods, metrics, metrics_spaces, get_metricsaggregateportfolio, 'get_metricsaggregatebuildings{building_id}', get_metricsaggregatefloors, get_metricsaggregatespace, get_metricsaggregatespacegroups, get_metricsaggregatespacetypes, get_metricsaggregateneighborhoods]
+  relationships:
+  - {kind: belongs_to, target: Space, via: space_id}
+  - {kind: belongs_to, target: Floor, via: floor_id}
+  - {kind: belongs_to, target: Building, via: building_id}
+  - {kind: belongs_to, target: Neighborhood, via: neighborhood_id}
+- name: Prediction
+  description: >-
+    A forecast produced by the Large Spatial Model from a supplied GeoJSON of the spaces on a floor.
+    Three variants — predicted space usage, the attendance level at which a meaningful number of
+    people cannot find a space (shortage), and occupancy distribution histograms by normalized space
+    type and capacity tier.
+  operations: [post_predict-space-usage, post_predict-space-shortage, post_predict-normalized-space-type-distribution]
+  input: GeoJSON of spaces on a floor
+  persisted: false
+  relationships:
+  - {kind: belongs_to, target: Floor, via: supplied GeoJSON}
+- name: Webhook
+  description: >-
+    A subscription that pushes space_report, space_availability or motion_detected events to a
+    customer HTTPS endpoint. The only writable entity in the API.
+  operations: [webhooks, webhooks-1, webhookssetup, webhooksid, webhooksid-1, webhooksidenable, webhooksiddisable, webhooksidlogs]
+  identifiers: [id]
+  relationships:
+  - {kind: has_many, target: WebhookDeliveryLog, via: webhook id}
+  - {kind: has_many, target: SpaceReport, via: subscription}
+- name: WebhookDeliveryLog
+  description: Per-delivery outcome records for a webhook subscription.
+  operations: [webhooksidlogs]
+  relationships:
+  - {kind: belongs_to, target: Webhook, via: id}
+- name: SpaceReport
+  description: >-
+    The event payload pushed for a space — person_count, signs_of_life, motion_detected, per-person
+    [x,y] coordinates, reporting sensor_ids, and an optional environment block carrying humidity
+    (RH), indoor air quality (UBA) and temperature (C).
+  operations: []
+  delivery: webhook only — there is no REST endpoint that returns this shape
+  relationships:
+  - {kind: belongs_to, target: Space, via: space_id}
+  - {kind: has_many, target: Sensor, via: sensor_ids}
+  source: https://vergesense.readme.io/reference/events
+
+graph_summary:
+  root: Portfolio
+  spine: Portfolio -> Building -> Floor -> Space
+  floor_groupings: [Neighborhood, SpaceGroup, SpaceType]
+  device_plane: Gateway -> Sensor -> (covers) Space
+  event_plane: Space -> SpaceReport / SpaceAvailability / MotionDetected -> Webhook -> WebhookDeliveryLog
+  measurement_plane: Space|Floor|Building|Neighborhood -> Metric (hourly | aggregate)
+  entity_count: 16
+  writable_entities: 1
+checked: '2026-09-02'

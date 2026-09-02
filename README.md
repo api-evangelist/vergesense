@@ -64,5 +64,20 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-VergeSense is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/vergesense_stock/
+VergeSense is the occupancy intelligence platform for corporate real estate and workplace teams,
+combining first-party AI sensors with a cloud analytics platform (Meridian, including a Large Spatial
+Model) to measure how buildings, floors, neighborhoods and individual spaces are actually used.
+
+The public VergeSense API is a key-authenticated REST surface at `api.vergesense.com` — 36 operations
+covering buildings, floors, spaces, space types, detections, threshold crossings, hourly and
+aggregate occupancy metrics, hardware inventory, a Large Spatial Model Predict API, and a
+self-service webhook subscription surface pushing `space_report`, `space_availability` and
+`motion_detected` events. Collection responses follow the JSON:API specification, timestamps are ISO
+8601, and the API is date-versioned via the `vs-version` header. VergeSense also operates an
+OAuth-protected remote MCP server at `mcp.vergesense.com`.
+
+- Website — https://www.vergesense.com/
+- Developer docs — https://vergesense.readme.io/
+- API reference — https://vergesense.readme.io/reference/reference-getting-started
+- Changelog — https://headwayapp.co/vergesense-changelog/
+- Postman collection — https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL

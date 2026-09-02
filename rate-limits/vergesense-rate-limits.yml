@@ -1,0 +1,57 @@
+generated: '2026-09-02'
+method: searched
+source: https://vergesense.readme.io/reference/reference-getting-started
+limit_count: 1
+limits:
+- name: Global REST API limit
+  scope: per-source-ip
+  window: 1 minute
+  limit: 120
+  unit: requests
+  burst: null
+  applies_to: >-
+    "across most API endpoints" — the provider does not enumerate which endpoints are excluded.
+  status_on_exhaustion: 429
+  source: https://vergesense.readme.io/reference/reference-getting-started
+response_headers:
+  documented: false
+  observed: []
+  note: >-
+    VergeSense publishes NO rate-limit response headers. Neither the legacy X-RateLimit-* family, the
+    IETF RateLimit-* family, nor Retry-After is documented, and none could be observed because every
+    endpoint returns 403 without a key. An agent therefore has no runtime budget signal at all: it can
+    only discover the limit by hitting the 429, and cannot learn when to retry. This is the single
+    largest agent-readiness gap on this API and it is a one-header fix.
+timeouts:
+- name: Request timeout
+  value: 30
+  unit: seconds
+  behavior: >-
+    Requests that exceed 30 seconds are cut off. The provider's published remedy is to narrow the
+    query with filters rather than retry, since the metrics endpoints compute over date ranges.
+  source: https://vergesense.readme.io/reference/reference-getting-started
+- name: Webhook receiver timeout
+  value: 5
+  unit: seconds
+  direction: outbound
+  behavior: >-
+    A customer webhook endpoint must return a 2xx within 5 seconds or the delivery is counted as
+    failed; >99% failures in 24 hours auto-disables the webhook.
+  source: https://vergesense.readme.io/reference/events
+pagination_caps:
+- endpoint: /spaces/detections
+  cap: 10000
+  unit: detections
+  behavior: responses are capped at 10,000 detections, after which JSON:API pagination takes over
+  source: https://vergesense.readme.io/reference/spaces_detections
+- endpoint: /hardware/sensors
+  cap: 1000
+  unit: sensors
+  behavior: responses are capped at 1,000 sensors, after which JSON:API pagination takes over
+  source: https://vergesense.readme.io/reference/hardware_sensors
+- endpoint: /hardware/gateways
+  cap: 1000
+  unit: gateways
+  behavior: responses are capped at 1,000 gateways, after which JSON:API pagination takes over
+  source: https://vergesense.readme.io/reference/hardware_gateways
+checked: '2026-09-02'

@@ -1,18 +1,90 @@
 aid: vergesense
 name: VergeSense
-description: 'VergeSense is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  VergeSense is the occupancy intelligence platform for corporate real estate and workplace teams. It
+  combines first-party AI-powered area, entryway and infinity sensors with a cloud analytics platform
+  (Meridian, including a Large Spatial Model) to measure how buildings, floors, neighborhoods and
+  individual spaces are actually used. The public VergeSense API is a key-authenticated REST surface at
+  api.vergesense.com covering buildings, floors, spaces, space types, detections, threshold crossings,
+  hourly and aggregate occupancy metrics, hardware inventory (sensors and gateways), a Predict API built
+  on the Large Spatial Model, and a fully managed webhook subscription surface that pushes space_report,
+  space_availability and motion_detected events to customer endpoints. Collection responses follow the
+  JSON:API specification, timestamps are ISO 8601, and the API is date-versioned (YYYY-MM-DD) via the
+  vs-version request header. VergeSense also operates an OAuth-protected remote MCP server at
+  mcp.vergesense.com for agent access.
+image: https://www.vergesense.com/hubfs/assets/logo/vergesense-logo--color.png
 url: https://raw.githubusercontent.com/api-evangelist/vergesense/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-09-02'
 modified: '2026-09-02'
 tags:
-- Company
-apis: []
+- Occupancy Intelligence
+- Workplace Analytics
+- Corporate Real Estate
+- PropTech
+- IoT Sensors
+- Building Data
+- Space Utilization
+- Facilities Management
+- Smart Buildings
+- Webhooks
+- MCP
+- JSON:API
+apis:
+- aid: vergesense-api
+  name: VergeSense API
+  description: >-
+    REST and webhook API for the VergeSense Cloud occupancy intelligence platform. Read buildings,
+    floors, spaces, space types, neighborhoods, space groups, detections and threshold crossings;
+    pull hourly and aggregate occupancy, utilization and headcount metrics at portfolio, building,
+    floor, neighborhood, space-type, space-group and space level; inventory sensors and gateways;
+    call the Predict API (space usage, space shortage, normalized space type distribution) built on
+    the VergeSense Large Spatial Model; and create, patch, enable, disable, delete and inspect the
+    delivery logs of webhooks that push space_report, space_availability and motion_detected events.
+  humanURL: https://vergesense.readme.io/reference/reference-getting-started
+  baseURL: https://api.vergesense.com
+  tags:
+  - Occupancy Intelligence
+  - Workplace Analytics
+  - Building Data
+  - Space Utilization
+  - IoT Sensors
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/vergesense-api-openapi.json
+  - type: Overlay
+    url: overlays/vergesense-api-overlay.yaml
+  - type: Documentation
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: APIReference
+    url: https://vergesense.readme.io/reference/buildings-1
+  - type: GettingStarted
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: Postman
+    url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  - type: Authentication
+    url: authentication/vergesense-authentication.yml
+  - type: RateLimits
+    url: rate-limits/vergesense-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/vergesense-problem-types.yml
+  - type: Examples
+    url: examples/vergesense-api-examples.json
+  - type: Webhooks
+    url: asyncapi/vergesense-webhooks.yml
+  - type: DataModel
+    url: data-model/vergesense-data-model.yml
+  - type: Conventions
+    url: conventions/vergesense-conventions.yml
+  - type: ChangeLog
+    url: changelog/vergesense-changelog.yml
+  - type: MCPServer
+    url: mcp/vergesense-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/vergesense-tool-crosswalk.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +92,76 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://forgeglobal.com/vergesense_stock/
+  url: https://www.vergesense.com/
+- type: DeveloperPortal
+  url: https://vergesense.readme.io/
+- type: Documentation
+  url: https://vergesense.readme.io/reference/reference-getting-started
+- type: APIReference
+  url: https://vergesense.readme.io/reference/buildings-1
+- type: GettingStarted
+  url: https://vergesense.readme.io/reference/reference-getting-started
+- type: Postman
+  url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+- type: ChangeLog
+  url: https://headwayapp.co/vergesense-changelog/
+- type: Blog
+  url: https://www.vergesense.com/resources/blog
+- type: Support
+  url: https://support.vergesense.com/hc/en-us
+- type: SignUp
+  url: https://cloud.vergesense.com/
+- type: Login
+  url: https://cloud.vergesense.com/
+- type: TermsOfService
+  url: https://www.vergesense.com/legal
+- type: PrivacyPolicy
+  url: https://www.vergesense.com/privacy-policy
+- type: GitHubOrganization
+  url: https://github.com/vergesense
+- type: Authentication
+  url: authentication/vergesense-authentication.yml
+- type: OAuthScopes
+  url: scopes/vergesense-scopes.yml
+- type: RateLimits
+  url: rate-limits/vergesense-rate-limits.yml
+- type: ErrorCatalog
+  url: errors/vergesense-problem-types.yml
+- type: Examples
+  url: examples/vergesense-api-examples.json
+- type: Conventions
+  url: conventions/vergesense-conventions.yml
+- type: Lifecycle
+  url: lifecycle/vergesense-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/vergesense-lifecycle.yml
+- type: ChangeLog
+  url: changelog/vergesense-changelog.yml
+- type: Conformance
+  url: conformance/vergesense-conformance.yml
+- type: DataModel
+  url: data-model/vergesense-data-model.yml
+- type: Webhooks
+  url: asyncapi/vergesense-webhooks.yml
+- type: Packages
+  url: packages/vergesense-packages.yml
+- type: Plans
+  url: plans/vergesense-plans-pricing.yml
+- type: LLMsTxt
+  url: llms/vergesense-llms.txt
+- type: WellKnown
+  url: well-known/vergesense-well-known.yml
+- type: MCPServer
+  url: mcp/vergesense-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/vergesense-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DomainSecurity
+  url: security/vergesense-domain-security.yml
+
+x-enrichment:
+  date: '2026-09-02'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v1

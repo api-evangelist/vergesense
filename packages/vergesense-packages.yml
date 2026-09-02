@@ -1,0 +1,85 @@
+generated: '2026-09-02'
+method: searched
+source: >-
+  Registry sweeps of npm (registry.npmjs.org search), PyPI, RubyGems, crates.io, NuGet and Packagist
+  for a first-party VergeSense client library, plus the provider's documentation index
+  (https://vergesense.readme.io/llms.txt), the Getting Started page and the GitHub organization.
+summary:
+  first_party_sdk_count: 0
+  third_party_package_count: 0
+  note: >-
+    VergeSense publishes NO client library in any public package registry, in any language, as of
+    2026-09-02. Its own published integration story is raw REST over api.vergesense.com with a
+    vs-api-key header, webhooks pushed to a customer endpoint, a public Postman collection, and
+    packaged connectors inside partner platforms (Archibus, Robin, and other IWMS products) that are
+    built and shipped by those partners rather than by VergeSense. Because no official SDK exists,
+    this repo emits NO SDKs pointer in apis.yml — the ergonomics sdk_count check must read a genuine
+    zero here.
+
+registry_sweep:
+  checked: '2026-09-02'
+  results:
+  - {registry: npm, query: vergesense, endpoint: 'https://registry.npmjs.org/-/v1/search?text=vergesense', total: 0}
+  - {registry: pypi, query: vergesense, endpoint: 'https://pypi.org/pypi/vergesense/json', status: 404}
+  - {registry: pypi, query: vergesense-api, status: 404}
+  - {registry: pypi, query: vergesense-sdk, status: 404}
+  - {registry: rubygems, query: vergesense, total: 0}
+  - {registry: crates.io, query: vergesense, total: 0}
+  - {registry: nuget, query: vergesense, total: 0}
+  - {registry: packagist, query: vergesense, total: 0, note: 'only unrelated German-language Contao packages matched on the substring "verge"'}
+
+github_organization:
+  found: true
+  url: https://github.com/vergesense
+  status: 200
+  public_repos: 5
+  contains_sdk: false
+  repositories:
+  - {name: async-redis-mock, language: JavaScript, description: 'Node.js async Redis client mock object for unit testing', fork: false}
+  - {name: ruby-odbc, language: C, description: 'ODBC Binding for Ruby', fork: true}
+  - {name: azure-storage-ruby, language: Ruby, description: 'Microsoft Azure Storage Library for Ruby', fork: true}
+  - {name: pynrfjprog, language: C, description: 'Python wrapper around the nrfjprog dynamic link library', fork: true}
+  - {name: alif_ml-embedded-evaluation-kit, language: C, description: 'ARM ML embedded evaluation kit, forked from Alif Semiconductor', fork: true}
+  attribution_basis: >-
+    The organization is named VergeSense and its repository mix is the internal toolchain of exactly
+    this company: pynrfjprog targets Nordic nRF silicon (the BLE class used in their battery sensors)
+    and the Alif ML embedded evaluation kit is the edge-AI SoC toolchain for a camera-based occupancy
+    sensor, alongside Ruby/Azure infrastructure libraries matching the api.azure.vergesense.com
+    deployment. It is engineering infrastructure, not a developer-facing SDK — four of the five repos
+    are forks of third-party libraries and none is a VergeSense API client.
+
+packages: []
+third_party_packages: []
+
+alternative_client_surfaces:
+- name: Postman Collection
+  type: collection
+  url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  status: 200
+  official: true
+  note: >-
+    The provider's own documentation names this as "the VergeSense API... available as a Postman
+    collection". It is the closest thing to a shipped client artifact and is wired in apis.yml as
+    type Postman.
+- name: OpenAPI definition
+  type: spec
+  url: openapi/vergesense-api-openapi.json
+  official: true
+  note: >-
+    A complete OpenAPI 3.1.0 with 36 operations is published through the ReadMe API registry, which
+    means a consumer can generate a client in any language. VergeSense does not, however, link the
+    raw spec from its documentation — it is reachable only through the ReadMe reference UI or the
+    registry endpoint.
+- name: Partner connectors
+  type: integration
+  url: https://www.vergesense.com/occupancy-intelligence/integrations
+  official: false
+  note: >-
+    Built and maintained by the integrating platforms (Archibus, Robin and other IWMS vendors), not
+    by VergeSense. Not counted as first-party packages.
+
+gaps:
+- No first-party SDK in any language, in any registry.
+- No raw OpenAPI download link from the documentation, so client generation is not signposted.
+- No CLI.
+checked: '2026-09-02'

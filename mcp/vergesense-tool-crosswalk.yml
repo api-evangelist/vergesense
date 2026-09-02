@@ -1,0 +1,231 @@
+generated: '2026-09-02'
+method: derived
+source: openapi/vergesense-api-openapi.json + probe of https://mcp.vergesense.com/mcp
+summary: >-
+  VergeSense ships BOTH a public OpenAPI and a remote MCP server, so a crosswalk is warranted. It
+  cannot yet be a tool-to-operation binding: the MCP tool list is OAuth-gated (HTTP 401 on an
+  anonymous tools/list) and no MCP tool reference is published in the docs or the llms.txt, so there
+  are no real tool names to bind. Rather than invent them, this file publishes the complete REST
+  operation inventory an authenticated introspection should be bound against, plus the surfaces
+  block, so a future round with a bearer token can fill crosswalk[] in one pass.
+surfaces:
+  openapi:
+    file: openapi/vergesense-api-openapi.json
+    version: '3.1.0'
+    api_version: '2021-03-29'
+    base_url: https://api.vergesense.com
+    gated: false
+    auth: apiKey header vs-api-key
+  mcp:
+    url: https://mcp.vergesense.com/mcp
+    gated: true
+    auth: oauth2 bearer via https://vergesense.auth0.com/
+    tools_readable: false
+  graphql:
+    published: false
+    probe: POST https://api.vergesense.com/graphql -> 404 {"status":404,"error":"Not Found"}
+crosswalk: []
+crosswalk_blocked_reason: >-
+  MCP tools/list returns 401. Binding tools to operationIds by guessing tool names would fabricate the
+  one thing this artifact exists to record, so crosswalk[] is deliberately empty.
+
+mcp_only: []
+mcp_only_blocked_reason: same as crosswalk_blocked_reason.
+
+rest_only:
+- operationId: hardware_gateways
+  http: GET /hardware/gateways
+  category: hardware
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: hardware_sensors
+  http: GET /hardware/sensors
+  category: hardware
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: sensors-1
+  http: GET /sensors
+  category: hardware
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: sensorshistory
+  http: GET /sensors/history
+  category: hardware
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: sensorsstate
+  http: GET /sensors/state
+  category: hardware
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: get_metricsaggregatebuildings{building_id}
+  http: GET /metrics/aggregate/buildings/{building_id}
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: get_metricsaggregatefloors
+  http: GET /metrics/aggregate/floors/{floor_id}
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: get_metricsaggregateneighborhoods
+  http: GET /metrics/aggregate/neighborhoods/{neighborhood_id}
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: get_metricsaggregateportfolio
+  http: GET /metrics/aggregate/portfolio
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: get_metricsaggregatespacegroups
+  http: GET /metrics/aggregate/space_groups
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: get_metricsaggregatespacetypes
+  http: GET /metrics/aggregate/space_types
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: metrics
+  http: GET /metrics/aggregate/spaces
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: get_metricsaggregatespace
+  http: GET /metrics/aggregate/spaces/{space_id}
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: metrics_hourly_buildings
+  http: GET /metrics/hourly/buildings
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: metrics_hourly_floors
+  http: GET /metrics/hourly/floors
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: metrics-hourly-neighborhoods
+  http: GET /metrics/hourly/neighborhoods
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: metrics_hourly_spaces
+  http: GET /metrics/hourly/spaces
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: metrics_spaces
+  http: GET /metrics/spaces
+  category: metrics
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: post_predict-normalized-space-type-distribution
+  http: POST /predict/normalized_space_type_distribution
+  category: prediction
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: post_predict-space-shortage
+  http: POST /predict/space_shortage
+  category: prediction
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: post_predict-space-usage
+  http: POST /predict/space_usage
+  category: prediction
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: buildings-1
+  http: GET /buildings
+  category: spatial
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: buildings-2
+  http: GET /buildings/{building_ref_id}
+  category: spatial
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: buildingsbuilding_ref_idhistory
+  http: GET /buildings/{building_ref_id}/history
+  category: spatial
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: spaces-1
+  http: GET /spaces
+  category: spatial
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: spaces_detections
+  http: GET /spaces/detections
+  category: spatial
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: spaces_thresholds_crossings
+  http: GET /spaces/thresholds/crossings
+  category: spatial
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: space_types
+  http: GET /spaces/types
+  category: spatial
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhooks
+  http: GET /webhooks
+  category: webhooks
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhooks-1
+  http: POST /webhooks
+  category: webhooks
+  write: true
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhookssetup
+  http: GET /webhooks/setup
+  category: webhooks
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhooksid-1
+  http: DELETE /webhooks/{id}
+  category: webhooks
+  write: true
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhooksid
+  http: PATCH /webhooks/{id}
+  category: webhooks
+  write: true
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhooksiddisable
+  http: POST /webhooks/{id}/disable
+  category: webhooks
+  write: true
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhooksidenable
+  http: POST /webhooks/{id}/enable
+  category: webhooks
+  write: true
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+- operationId: webhooksidlogs
+  http: GET /webhooks/{id}/logs
+  category: webhooks
+  write: false
+  reason: MCP tool list is auth-gated; no tool could be bound to this operation
+
+coverage:
+  rest_operations: 36
+  rest_write_operations: 5
+  mcp_tools: null
+  bound: 0
+  mcp_only: 0
+  rest_only: 36
+  binding_confidence: null
+  by_category:
+    hardware: 5
+    metrics: 13
+    prediction: 3
+    spatial: 7
+    webhooks: 8
+checked: '2026-09-02'

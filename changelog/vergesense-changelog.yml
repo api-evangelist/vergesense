@@ -1,0 +1,196 @@
+generated: '2026-09-02'
+method: searched
+source: https://headwayapp.co/vergesense-changelog/rss
+sources:
+- https://headwayapp.co/vergesense-changelog/
+- https://headwayapp.co/vergesense-changelog/rss
+- https://vergesense.readme.io/changelog
+- https://vergesense.readme.io/reference/reference-getting-started
+
+summary: >-
+  VergeSense runs a real, dated, publicly readable API changelog on Headway with an RSS feed, and its
+  own documentation names it as the authoritative place API changes are announced. Entries are typed
+  (New / Improvement / Deprecation), name the exact endpoint affected, and — for breaking changes —
+  state an effective date in advance. Twenty entries are in the feed, spanning 2023-02 to 2026-03.
+
+scheme: date-versioned API (YYYY-MM-DD) announced through a typed changelog
+current_version: '2019-04-17'
+spec_info_version: '2021-03-29'
+version_header: vs-version
+
+feeds:
+- type: rss
+  url: https://headwayapp.co/vergesense-changelog/rss
+  status: 200
+  machine_readable: true
+- type: html
+  url: https://headwayapp.co/vergesense-changelog/
+  status: 200
+- type: html
+  url: https://vergesense.readme.io/changelog
+  note: >-
+    A separate, much thinner ReadMe-hosted changelog carrying three posts (New PIR Triggered Webhook,
+    Wired Sensor Duplicate Zero-Count Report Filtering, Welcome to VergeSense). Headway is the
+    authoritative one; the documentation links to Headway, not to this.
+
+entry_count: 20
+window: 2023-02-03 .. 2026-03-13
+
+entries:
+- date: '2026-03-13'
+  type: New
+  title: 'Predict API: Large Spatial Model endpoints now available'
+  breaking: false
+  highlights: >-
+    Three new endpoints powered by the VergeSense Large Spatial Model, trained on 5,000+ floorplans
+    and 200M+ square feet of observed people-space interaction — /predict/space_usage,
+    /predict/space_shortage and /predict/normalized_space_type_distribution.
+  operations:
+  - post_predict-space-usage
+  - post_predict-space-shortage
+  - post_predict-normalized-space-type-distribution
+  url: https://headwayapp.co/vergesense-changelog/predict-api-large-spatial-model-endpoints-now-available-333782
+- date: '2026-03-04'
+  type: Deprecation
+  title: Deprecating Space Type Attributes
+  breaking: true
+  effective: '2026-04-01'
+  highlights: >-
+    Various attributes associated with space types are deprecated effective 1 April 2026, affecting
+    the /spaces/types endpoint and downstream surfaces. Announced roughly four weeks ahead.
+  operations:
+  - space_types
+  url: https://headwayapp.co/vergesense-changelog/deprecating-space-type-attributes-333231
+- date: '2025-06-18'
+  type: New
+  title: Aggregate Building Metrics
+  breaking: false
+  highlights: Adds /metrics/aggregate/buildings, following the earlier aggregate space metrics endpoint.
+  url: https://headwayapp.co/vergesense-changelog/aggregate-building-metrics-317646
+- date: '2025-04-14'
+  type: New
+  title: Aggregate Space and Neighborhood Metrics
+  breaking: false
+  highlights: Adds /metrics/aggregate/spaces and /metrics/hourly/neighborhoods.
+  url: https://headwayapp.co/vergesense-changelog/aggregate-space-and-neighborhood-metrics-313435
+- date: '2025-01-17'
+  type: New
+  title: Changing ID format for Hourly Building and Hourly Floor Metrics
+  breaking: true
+  highlights: >-
+    Performance work on the hourly building and hourly floor metrics endpoints required a change to
+    the id field format returned by those endpoints.
+  url: https://headwayapp.co/vergesense-changelog/changing-id-format-for-hourly-building-and-hourly-floor-metrics-307956
+- date: '2025-01-08'
+  type: Improvement
+  title: Wired Sensor Duplicate Zero-Count Report Filtering
+  breaking: false
+  highlights: >-
+    Wired sensor models E104, E105 and E106 gain duplicate zero-count report filtering, reducing
+    redundant space_report webhook traffic.
+  url: https://headwayapp.co/vergesense-changelog/wired-sensor-duplicate-zero-count-report-filtering-307449
+- date: '2024-11-21'
+  type: New
+  title: Floating Point Metrics Rounded to 2 Decimal Places
+  breaking: true
+  effective: '2024-12-04'
+  highlights: >-
+    average_person_count and average_person_count_when_used are rounded to two decimal places across
+    the metrics endpoints from 4 December 2024.
+  url: https://headwayapp.co/vergesense-changelog/floating-point-metrics-rounded-to-2-decimal-places-305026
+- date: '2024-11-12'
+  type: Improvement
+  title: ID format updated in Metrics Spaces API
+  breaking: true
+  highlights: >-
+    The id field on /metrics/hourly/spaces now combines a per-space unique identifier with the
+    time bucket.
+  url: https://headwayapp.co/vergesense-changelog/id-format-updated-in-metrics-spaces-api-304406
+- date: '2024-11-08'
+  type: Improvement
+  title: Thresholded building and floor data added to Metrics Spaces API endpoint
+  breaking: false
+  highlights: >-
+    Buildings and floors instrumented with VergeSense EN1 entryway devices now return threshold data
+    from the metrics spaces endpoint.
+  url: https://headwayapp.co/vergesense-changelog/thresholded-building-and-floor-data-added-to-metrics-spaces-api-endpoint-304227
+- date: '2024-05-07'
+  type: Improvement
+  title: Timezone added to Buildings endpoint
+  breaking: false
+  highlights: /buildings responses gain a full IANA timezone name field.
+  url: https://headwayapp.co/vergesense-changelog/timezone-added-to-buildings-endpoint-292343
+- date: '2024-04-12'
+  type: New
+  title: Send Frequency Option for Space Report Event Webhook
+  breaking: false
+  highlights: >-
+    The space_report webhook gains a Send Frequency configuration with two modes — Always, and
+    on-change only — to control event volume.
+  url: https://headwayapp.co/vergesense-changelog/send-frequency-option-for-space-report-event-webhook-290303
+- date: '2024-03-07'
+  type: Improvement
+  title: New filters added to the Detections API
+  breaking: false
+  highlights: '/spaces/detections gains filter[count][gt] and a companion count filter.'
+  url: https://headwayapp.co/vergesense-changelog/new-filters-added-to-the-detections-api-287620
+- date: '2024-02-07'
+  type: Improvement
+  title: passively_occupied added to Space Availability Event
+  breaking: false
+  highlights: The space_availability webhook payload gains a passively_occupied field (true/false/null).
+  url: https://headwayapp.co/vergesense-changelog/passively_occupied-added-to-space-availability-event-285331
+- date: '2023-11-27'
+  type: Improvement
+  title: Building filters added to Hardware endpoints
+  breaking: false
+  highlights: building_id and building_ref_id query parameters added to /hardware/sensors and /hardware/gateways.
+  url: https://headwayapp.co/vergesense-changelog/building-filters-added-to-hardware-endpoints-280034
+- date: '2023-10-27'
+  type: Improvement
+  title: New building_id and building_ref_id filters in Space Metrics
+  breaking: false
+  highlights: /metrics/spaces gains building_id and building_ref_id filtering.
+  url: https://headwayapp.co/vergesense-changelog/new-building_id-and-building_ref_id-filters-in-space-metrics-277855
+- date: '2023-09-20'
+  type: New
+  title: Space Types API
+  breaking: false
+  highlights: Adds /spaces/types, exposing configured space-type detail.
+- date: '2023-05-16'
+  type: New
+  title: Hourly Floor Metrics API
+  breaking: false
+  highlights: Adds /metrics/hourly/floors alongside the existing hourly space metrics endpoint.
+- date: '2023-05-11'
+  type: Improvement
+  title: space_id added to Webhooks
+  breaking: false
+  highlights: >-
+    The internal space_id attribute was added to the space_report and space_availability webhook
+    payloads.
+- date: '2023-05-08'
+  type: New
+  title: Gateway Hardware API
+  breaking: false
+  highlights: >-
+    /hardware/sensors surfaces sensor MAC addresses, and a /hardware/gateways endpoint is introduced.
+- date: '2023-02-03'
+  type: New
+  title: Space Metrics Endpoint
+  breaking: false
+  highlights: >-
+    Adds /metrics/spaces, returning metrics aggregated by a requested time interval.
+
+observations:
+  cadence: >-
+    Roughly one entry per quarter over three and a half years, with a marked slowdown through 2025-26
+    (five entries in the last twenty months) followed by the March 2026 Predict/LSM release.
+  breaking_change_handling: >-
+    Breaking changes are announced with a stated effective date ahead of the change (2026-04-01 for
+    the space-type deprecation; 2024-12-04 for the metric rounding). The announcement is prose in a
+    changelog, not a Sunset header or a deprecated flag in the OpenAPI.
+  gap: >-
+    The changelog is the only channel. There is no version-diff endpoint, no per-version spec
+    archive, and the published OpenAPI does not carry deprecated: true for the March 2026 deprecation.
+checked: '2026-09-02'

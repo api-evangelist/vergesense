@@ -1,0 +1,137 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for the VergeSense API
+  version: 1.0.0
+extends: ../openapi/vergesense-api-openapi.json
+x-provenance:
+  generated: '2026-09-02'
+  method: generated
+  source: >-
+    Derived from the provider's own published documentation
+    (https://vergesense.readme.io/reference/reference-getting-started,
+    /reference/events, /reference/links) and from live probes of api.vergesense.com and
+    mcp.vergesense.com. This overlay adds ONLY facts VergeSense itself publishes that are missing
+    from the machine-readable contract. It never mutates openapi/vergesense-api-openapi.json.
+  scope: >-
+    The upstream spec is a ReadMe-generated 3.1.0 document with no tags, no components.schemas, no
+    contact/license/termsOfService, only the AWS server, and no description on info. Every action
+    below closes one of those gaps from a published source.
+actions:
+- target: $.info
+  description: >-
+    Add a description, contact, terms and license metadata block. VergeSense publishes all of this on
+    its site and support pages but none of it reaches the generated spec.
+  update:
+    description: >-
+      REST and webhook API for the VergeSense Cloud occupancy intelligence platform. Read buildings,
+      floors, spaces, space types, neighborhoods and space groups; pull hourly and aggregate
+      occupancy metrics; inventory sensors and gateways; call the Large Spatial Model Predict API;
+      and manage webhook subscriptions for space_report, space_availability and motion_detected
+      events. Authenticated with a vs-api-key header. Collection endpoints follow JSON:API
+      pagination. Date-versioned via the vs-version header.
+    contact:
+      name: VergeSense Support
+      email: support@vergesense.com
+      url: https://support.vergesense.com/hc/en-us
+    termsOfService: https://www.vergesense.com/legal
+- target: $.servers
+  description: >-
+    The upstream spec declares only the AWS host. The Getting Started page documents an Azure
+    deployment as an equal alternative for Azure-hosted tenants, so a client generated from the spec
+    alone cannot reach half the customer base.
+  update:
+  - url: https://api.vergesense.com
+    description: AWS (default)
+  - url: https://api.azure.vergesense.com
+    description: Azure deployment
+- target: $.paths[*][*]
+  description: >-
+    Document the global 403 that every operation can return. The upstream spec declares 400 (and 404
+    on five metrics operations) but never declares the authentication failure, even though the docs
+    state plainly that a missing header or invalid token returns 403.
+  update:
+    responses:
+      '403':
+        description: >-
+          Forbidden. Caused by a missing vs-api-key HTTP header or an invalid API token. Also
+          returned when the key is not scoped to the requested building.
+      '429':
+        description: >-
+          Too Many Requests. A rate limit of 120 requests/minute per source IP is enforced across
+          most endpoints. No Retry-After or RateLimit-* header is returned.
+- target: $.paths['/spaces/detections'].get
+  description: Record the published response cap and the JSON:API pagination profile as machine-readable extensions.
+  update:
+    x-pagination:
+      style: jsonapi
+      params: ['page[number]', 'page[size]']
+      links: [next, previous]
+      max_records: 10000
+- target: $.paths['/hardware/sensors'].get
+  description: Record the published 1,000-record response cap.
+  update:
+    x-pagination:
+      style: jsonapi
+      params: ['page[number]', 'page[size]']
+      links: [next, previous]
+      max_records: 1000
+- target: $.paths['/hardware/gateways'].get
+  description: Record the published 1,000-record response cap.
+  update:
+    x-pagination:
+      style: jsonapi
+      params: ['page[number]', 'page[size]']
+      links: [next, previous]
+      max_records: 1000
+- target: $.paths['/spaces/types'].get
+  description: >-
+    Flag the deprecation VergeSense announced on 2026-03-04 with an effective date of 2026-04-01.
+    Several space-type attributes are being removed and the upstream spec carries no deprecation
+    signal at all.
+  update:
+    x-deprecation:
+      partial: true
+      scope: various space type attributes, not the operation itself
+      effective: '2026-04-01'
+      announced: '2026-03-04'
+      announcement: https://headwayapp.co/vergesense-changelog/deprecating-space-type-attributes-333231
+- target: $.paths['/webhooks/{id}']
+  description: >-
+    Record the reversibility posture of the webhook write surface — the only writes on this API.
+    DELETE is the single irreversible operation; disable/enable is the symmetric alternative.
+  update:
+    x-reversibility:
+      delete:
+        reversible: false
+        preferred_alternative: POST /webhooks/{id}/disable
+        note: >-
+          A deleted webhook cannot be restored and a recreated one receives a new id. Disable
+          preserves configuration and id and is fully reversible with enable.
+      patch:
+        reversible: true
+        requires: the caller must read GET /webhooks first — no revision history or restore exists
+- target: $.components.securitySchemes.sec0
+  description: >-
+    Add the human-readable description the generated scheme lacks, including how a key is obtained
+    and what it is scoped to.
+  update:
+    description: >-
+      API key sent in the vs-api-key header on every request. Keys are requested by emailing
+      support@vergesense.com for a VergeSense Developer account, then generated under
+      Settings > API Keys in the VergeSense Cloud app. A key is scoped to a selected set of buildings
+      and can be rotated in-app. There are no OAuth scopes and no read-only key type. All requests
+      must use https.
+- target: $
+  description: >-
+    Record the sibling agent surface. VergeSense runs an OAuth-protected remote MCP server that is
+    undocumented in its own reference and invisible from this contract.
+  update:
+    x-mcp:
+      endpoint: https://mcp.vergesense.com/mcp
+      transport: streamable-http
+      auth: oauth2
+      protected_resource_metadata: https://mcp.vergesense.com/.well-known/oauth-protected-resource/mcp
+      authorization_server: https://vergesense.auth0.com/
+      verified: probed
+      probed: '2026-09-02'
+    x-webhooks-catalog: ../asyncapi/vergesense-webhooks.yml
