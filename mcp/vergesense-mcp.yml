@@ -3,28 +3,29 @@ method: probed
 source: https://mcp.vergesense.com/mcp
 name: VergeSense MCP Server
 status: live
-summary: >-
-  VergeSense operates a first-party remote MCP server on its own dedicated subdomain. It is not a
-  derived candidate: an anonymous JSON-RPC POST of tools/list returns HTTP 401 with an RFC 9728
-  WWW-Authenticate challenge, and the protected-resource metadata it points at resolves 200 and
-  names the VergeSense Auth0 tenant as the authorization server. The endpoint is therefore proven to
-  exist and proven to be OAuth-gated. The tool list itself could not be read anonymously.
-
+summary: 'VergeSense operates a first-party remote MCP server on its own dedicated subdomain. It is not
+  a derived candidate: an anonymous JSON-RPC POST of tools/list returns HTTP 401 with an RFC 9728 WWW-Authenticate
+  challenge, and the protected-resource metadata it points at resolves 200 and names the VergeSense Auth0
+  tenant as the authorization server. The endpoint is therefore proven to exist and proven to be OAuth-gated.
+  The tool list itself could not be read anonymously.'
 deployment:
   mode: remote
   endpoint: https://mcp.vergesense.com/mcp
   auth: oauth
   verified: probed
-
+  probe_prior: (never probed)
+  probe: gated
+  probe_why: RFC 9728 challenge on the MCP path only
+  checked: '2026-09-11'
+  source: claimed-backlog re-probe 2026-09-11
 transport: streamable-http
 protocol_challenge:
   probed: '2026-09-02'
-  request: 'POST https://mcp.vergesense.com/mcp {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  request: POST https://mcp.vergesense.com/mcp {"jsonrpc":"2.0","id":1,"method":"tools/list"}
   request_headers: 'Accept: application/json, text/event-stream'
   http_status: 401
   body: '{"error":"unauthorized","error_description":"missing bearer token"}'
-  www_authenticate: 'Bearer resource_metadata="https://mcp.vergesense.com/.well-known/oauth-protected-resource/mcp"'
-
+  www_authenticate: Bearer resource_metadata="https://mcp.vergesense.com/.well-known/oauth-protected-resource/mcp"
 authorization:
   rfc: RFC 9728 (OAuth 2.0 Protected Resource Metadata)
   resource: https://mcp.vergesense.com/mcp
@@ -39,39 +40,29 @@ authorization:
   discovery_documents:
   - well-known/vergesense-mcp-oauth-protected-resource.json
   - well-known/vergesense-auth0-openid-configuration.json
-
 ownership:
   host: mcp.vergesense.com
-  basis: >-
-    Dedicated subdomain of the provider's own registrable domain, sharing the Cloudflare origin and
-    the response-header fingerprint of api.vergesense.com (the same CSP, the same
-    vergesense.report-uri.com NEL/Report-To endpoints, the same HSTS preload directive). The
-    authorization server it names is vergesense.auth0.com, the provider's own Auth0 tenant.
-
+  basis: Dedicated subdomain of the provider's own registrable domain, sharing the Cloudflare origin and
+    the response-header fingerprint of api.vergesense.com (the same CSP, the same vergesense.report-uri.com
+    NEL/Report-To endpoints, the same HSTS preload directive). The authorization server it names is vergesense.auth0.com,
+    the provider's own Auth0 tenant.
 tools:
   known: false
   count: null
-  note: >-
-    NOT DERIVED AND NOT GUESSED. The live tool list is behind the OAuth wall and VergeSense publishes
-    no MCP tool reference in its documentation, its llms.txt, or its changelog. Reading the real
-    inputSchemas requires an authenticated introspection with a VergeSense-issued bearer token.
-    A REST-side operation inventory that an authenticated crosswalk can be bound against is in
-    mcp/vergesense-tool-crosswalk.yml.
-
+  note: NOT DERIVED AND NOT GUESSED. The live tool list is behind the OAuth wall and VergeSense publishes
+    no MCP tool reference in its documentation, its llms.txt, or its changelog. Reading the real inputSchemas
+    requires an authenticated introspection with a VergeSense-issued bearer token. A REST-side operation
+    inventory that an authenticated crosswalk can be bound against is in mcp/vergesense-tool-crosswalk.yml.
 documentation:
   published: false
-  note: >-
-    As of 2026-09-02 the MCP server is undocumented on vergesense.readme.io, absent from
-    https://vergesense.readme.io/llms.txt, and absent from the Headway changelog. It was found only
-    by probing. This is a discoverability gap the provider can close in one line of docs.
-
+  note: As of 2026-09-02 the MCP server is undocumented on vergesense.readme.io, absent from https://vergesense.readme.io/llms.txt,
+    and absent from the Headway changelog. It was found only by probing. This is a discoverability gap
+    the provider can close in one line of docs.
 other_mcp_surfaces:
 - endpoint: https://vergesense.readme.io/mcp
   operator: ReadMe (documentation platform), running on the provider's ReadMe project host
   http_status: 401
   body: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"},"id":null}'
-  note: >-
-    A documentation-search MCP endpoint provisioned by the ReadMe platform, not the VergeSense
-    product API. Recorded for completeness; it is NOT the endpoint this artifact points at.
-
+  note: A documentation-search MCP endpoint provisioned by the ReadMe platform, not the VergeSense product
+    API. Recorded for completeness; it is NOT the endpoint this artifact points at.
 checked: '2026-09-02'
