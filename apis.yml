@@ -1,17 +1,16 @@
 aid: vergesense
 name: VergeSense
-description: >-
-  VergeSense is the occupancy intelligence platform for corporate real estate and workplace teams. It
-  combines first-party AI-powered area, entryway and infinity sensors with a cloud analytics platform
-  (Meridian, including a Large Spatial Model) to measure how buildings, floors, neighborhoods and
-  individual spaces are actually used. The public VergeSense API is a key-authenticated REST surface at
-  api.vergesense.com covering buildings, floors, spaces, space types, detections, threshold crossings,
+description: VergeSense is the occupancy intelligence platform for corporate real estate and workplace
+  teams. It combines first-party AI-powered area, entryway and infinity sensors with a cloud analytics
+  platform (Meridian, including a Large Spatial Model) to measure how buildings, floors, neighborhoods
+  and individual spaces are actually used. The public VergeSense API is a key-authenticated REST surface
+  at api.vergesense.com covering buildings, floors, spaces, space types, detections, threshold crossings,
   hourly and aggregate occupancy metrics, hardware inventory (sensors and gateways), a Predict API built
   on the Large Spatial Model, and a fully managed webhook subscription surface that pushes space_report,
   space_availability and motion_detected events to customer endpoints. Collection responses follow the
   JSON:API specification, timestamps are ISO 8601, and the API is date-versioned (YYYY-MM-DD) via the
-  vs-version request header. VergeSense also operates an OAuth-protected remote MCP server at
-  mcp.vergesense.com for agent access.
+  vs-version request header. VergeSense also operates an OAuth-protected remote MCP server at mcp.vergesense.com
+  for agent access.
 image: https://www.vergesense.com/hubfs/assets/logo/vergesense-logo--color.png
 url: https://raw.githubusercontent.com/api-evangelist/vergesense/refs/heads/main/apis.yml
 x-type: company
@@ -29,23 +28,42 @@ tags:
 - Space Utilization
 - Facilities Management
 - Smart Buildings
+- Webhook
+- MCP
+- JSON:API
+tags_raw:
+- Occupancy Intelligence
+- Workplace Analytics
+- Corporate Real Estate
+- PropTech
+- IoT Sensors
+- Building Data
+- Space Utilization
+- Facilities Management
+- Smart Buildings
 - Webhooks
 - MCP
 - JSON:API
 apis:
-- aid: vergesense-api
+- aid: vergesense:vergesense-api
   name: VergeSense API
-  description: >-
-    REST and webhook API for the VergeSense Cloud occupancy intelligence platform. Read buildings,
-    floors, spaces, space types, neighborhoods, space groups, detections and threshold crossings;
-    pull hourly and aggregate occupancy, utilization and headcount metrics at portfolio, building,
-    floor, neighborhood, space-type, space-group and space level; inventory sensors and gateways;
-    call the Predict API (space usage, space shortage, normalized space type distribution) built on
-    the VergeSense Large Spatial Model; and create, patch, enable, disable, delete and inspect the
-    delivery logs of webhooks that push space_report, space_availability and motion_detected events.
+  description: REST and webhook API for the VergeSense Cloud occupancy intelligence platform. Read buildings,
+    floors, spaces, space types, neighborhoods, space groups, detections and threshold crossings; pull
+    hourly and aggregate occupancy, utilization and headcount metrics at portfolio, building, floor, neighborhood,
+    space-type, space-group and space level; inventory sensors and gateways; call the Predict API (space
+    usage, space shortage, normalized space type distribution) built on the VergeSense Large Spatial Model;
+    and create, patch, enable, disable, delete and inspect the delivery logs of webhooks that push space_report,
+    space_availability and motion_detected events.
   humanURL: https://vergesense.readme.io/reference/reference-getting-started
   baseURL: https://api.vergesense.com
   tags:
+  - Occupancy Intelligence
+  - Workplace Analytics
+  - Building Data
+  - Space Utilization
+  - IoT Sensors
+  - Webhook
+  tags_raw:
   - Occupancy Intelligence
   - Workplace Analytics
   - Building Data
@@ -159,7 +177,6 @@ common:
   url: skills/_index.yml
 - type: DomainSecurity
   url: security/vergesense-domain-security.yml
-
 x-enrichment:
   date: '2026-09-02'
   status: enriched
