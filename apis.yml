@@ -45,36 +45,16 @@ tags_raw:
 - MCP
 - JSON:API
 apis:
-- aid: vergesense:vergesense-api
-  name: VergeSense API
-  description: REST and webhook API for the VergeSense Cloud occupancy intelligence platform. Read buildings,
-    floors, spaces, space types, neighborhoods, space groups, detections and threshold crossings; pull
-    hourly and aggregate occupancy, utilization and headcount metrics at portfolio, building, floor, neighborhood,
-    space-type, space-group and space level; inventory sensors and gateways; call the Predict API (space
-    usage, space shortage, normalized space type distribution) built on the VergeSense Large Spatial Model;
-    and create, patch, enable, disable, delete and inspect the delivery logs of webhooks that push space_report,
-    space_availability and motion_detected events.
+- aid: vergesense:vergesense-buildings-api
+  name: VergeSense Buildings API
+  description: The Buildings API from VergeSense — 3 operation(s) for buildings.
   humanURL: https://vergesense.readme.io/reference/reference-getting-started
   baseURL: https://api.vergesense.com
   tags:
-  - Occupancy Intelligence
-  - Workplace Analytics
-  - Building Data
-  - Space Utilization
-  - IoT Sensors
-  - Webhook
-  tags_raw:
-  - Occupancy Intelligence
-  - Workplace Analytics
-  - Building Data
-  - Space Utilization
-  - IoT Sensors
-  - Webhooks
+  - Buildings
   properties:
   - type: OpenAPI
-    url: openapi/vergesense-api-openapi.json
-  - type: Overlay
-    url: overlays/vergesense-api-overlay.yaml
+    url: openapi/vergesense-buildings-api-openapi.yml
   - type: Documentation
     url: https://vergesense.readme.io/reference/reference-getting-started
   - type: APIReference
@@ -99,8 +79,222 @@ apis:
     url: conventions/vergesense-conventions.yml
   - type: ChangeLog
     url: changelog/vergesense-changelog.yml
-  - type: MCPServer
-    url: mcp/vergesense-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/vergesense-tool-crosswalk.yml
+- aid: vergesense:vergesense-hardware-api
+  name: VergeSense Hardware API
+  description: The Hardware API from VergeSense — 2 operation(s) for hardware.
+  humanURL: https://vergesense.readme.io/reference/reference-getting-started
+  baseURL: https://api.vergesense.com
+  tags:
+  - Hardware
+  properties:
+  - type: OpenAPI
+    url: openapi/vergesense-hardware-api-openapi.yml
+  - type: Documentation
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: APIReference
+    url: https://vergesense.readme.io/reference/buildings-1
+  - type: GettingStarted
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: Postman
+    url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  - type: Authentication
+    url: authentication/vergesense-authentication.yml
+  - type: RateLimits
+    url: rate-limits/vergesense-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/vergesense-problem-types.yml
+  - type: Examples
+    url: examples/vergesense-api-examples.json
+  - type: Webhooks
+    url: asyncapi/vergesense-webhooks.yml
+  - type: DataModel
+    url: data-model/vergesense-data-model.yml
+  - type: Conventions
+    url: conventions/vergesense-conventions.yml
+  - type: ChangeLog
+    url: changelog/vergesense-changelog.yml
+  - type: ToolCrosswalk
+    url: mcp/vergesense-tool-crosswalk.yml
+- aid: vergesense:vergesense-metrics-api
+  name: VergeSense Metrics API
+  description: The Metrics API from VergeSense — 13 operation(s) for metrics.
+  humanURL: https://vergesense.readme.io/reference/reference-getting-started
+  baseURL: https://api.vergesense.com
+  tags:
+  - Metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/vergesense-metrics-api-openapi.yml
+  - type: Documentation
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: APIReference
+    url: https://vergesense.readme.io/reference/buildings-1
+  - type: GettingStarted
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: Postman
+    url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  - type: Authentication
+    url: authentication/vergesense-authentication.yml
+  - type: RateLimits
+    url: rate-limits/vergesense-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/vergesense-problem-types.yml
+  - type: Examples
+    url: examples/vergesense-api-examples.json
+  - type: Webhooks
+    url: asyncapi/vergesense-webhooks.yml
+  - type: DataModel
+    url: data-model/vergesense-data-model.yml
+  - type: Conventions
+    url: conventions/vergesense-conventions.yml
+  - type: ChangeLog
+    url: changelog/vergesense-changelog.yml
+  - type: ToolCrosswalk
+    url: mcp/vergesense-tool-crosswalk.yml
+- aid: vergesense:vergesense-predict-api
+  name: VergeSense Predict API
+  description: The Predict API from VergeSense — 3 operation(s) for predict.
+  humanURL: https://vergesense.readme.io/reference/reference-getting-started
+  baseURL: https://api.vergesense.com
+  tags:
+  - Predict
+  properties:
+  - type: OpenAPI
+    url: openapi/vergesense-predict-api-openapi.yml
+  - type: Documentation
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: APIReference
+    url: https://vergesense.readme.io/reference/buildings-1
+  - type: GettingStarted
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: Postman
+    url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  - type: Authentication
+    url: authentication/vergesense-authentication.yml
+  - type: RateLimits
+    url: rate-limits/vergesense-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/vergesense-problem-types.yml
+  - type: Examples
+    url: examples/vergesense-api-examples.json
+  - type: Webhooks
+    url: asyncapi/vergesense-webhooks.yml
+  - type: DataModel
+    url: data-model/vergesense-data-model.yml
+  - type: Conventions
+    url: conventions/vergesense-conventions.yml
+  - type: ChangeLog
+    url: changelog/vergesense-changelog.yml
+  - type: ToolCrosswalk
+    url: mcp/vergesense-tool-crosswalk.yml
+- aid: vergesense:vergesense-sensors-api
+  name: VergeSense Sensors API
+  description: The Sensors API from VergeSense — 3 operation(s) for sensors.
+  humanURL: https://vergesense.readme.io/reference/reference-getting-started
+  baseURL: https://api.vergesense.com
+  tags:
+  - Sensors
+  properties:
+  - type: OpenAPI
+    url: openapi/vergesense-sensors-api-openapi.yml
+  - type: Documentation
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: APIReference
+    url: https://vergesense.readme.io/reference/buildings-1
+  - type: GettingStarted
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: Postman
+    url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  - type: Authentication
+    url: authentication/vergesense-authentication.yml
+  - type: RateLimits
+    url: rate-limits/vergesense-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/vergesense-problem-types.yml
+  - type: Examples
+    url: examples/vergesense-api-examples.json
+  - type: Webhooks
+    url: asyncapi/vergesense-webhooks.yml
+  - type: DataModel
+    url: data-model/vergesense-data-model.yml
+  - type: Conventions
+    url: conventions/vergesense-conventions.yml
+  - type: ChangeLog
+    url: changelog/vergesense-changelog.yml
+  - type: ToolCrosswalk
+    url: mcp/vergesense-tool-crosswalk.yml
+- aid: vergesense:vergesense-spaces-api
+  name: VergeSense Spaces API
+  description: The Spaces API from VergeSense — 4 operation(s) for spaces.
+  humanURL: https://vergesense.readme.io/reference/reference-getting-started
+  baseURL: https://api.vergesense.com
+  tags:
+  - Spaces
+  properties:
+  - type: OpenAPI
+    url: openapi/vergesense-spaces-api-openapi.yml
+  - type: Documentation
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: APIReference
+    url: https://vergesense.readme.io/reference/buildings-1
+  - type: GettingStarted
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: Postman
+    url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  - type: Authentication
+    url: authentication/vergesense-authentication.yml
+  - type: RateLimits
+    url: rate-limits/vergesense-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/vergesense-problem-types.yml
+  - type: Examples
+    url: examples/vergesense-api-examples.json
+  - type: Webhooks
+    url: asyncapi/vergesense-webhooks.yml
+  - type: DataModel
+    url: data-model/vergesense-data-model.yml
+  - type: Conventions
+    url: conventions/vergesense-conventions.yml
+  - type: ChangeLog
+    url: changelog/vergesense-changelog.yml
+  - type: ToolCrosswalk
+    url: mcp/vergesense-tool-crosswalk.yml
+- aid: vergesense:vergesense-webhooks-api
+  name: VergeSense Webhooks API
+  description: The Webhooks API from VergeSense — 6 operation(s) for webhooks.
+  humanURL: https://vergesense.readme.io/reference/reference-getting-started
+  baseURL: https://api.vergesense.com
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/vergesense-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: APIReference
+    url: https://vergesense.readme.io/reference/buildings-1
+  - type: GettingStarted
+    url: https://vergesense.readme.io/reference/reference-getting-started
+  - type: Postman
+    url: https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+  - type: Authentication
+    url: authentication/vergesense-authentication.yml
+  - type: RateLimits
+    url: rate-limits/vergesense-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/vergesense-problem-types.yml
+  - type: Examples
+    url: examples/vergesense-api-examples.json
+  - type: Webhooks
+    url: asyncapi/vergesense-webhooks.yml
+  - type: DataModel
+    url: data-model/vergesense-data-model.yml
+  - type: Conventions
+    url: conventions/vergesense-conventions.yml
+  - type: ChangeLog
+    url: changelog/vergesense-changelog.yml
   - type: ToolCrosswalk
     url: mcp/vergesense-tool-crosswalk.yml
 maintainers:
@@ -109,6 +303,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/vergesense-api-overlay.yaml
 - type: Website
   url: https://www.vergesense.com/
 - type: DeveloperPortal
