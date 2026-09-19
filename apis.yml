@@ -231,6 +231,8 @@ apis:
   humanURL: https://vergesense.readme.io/reference/reference-getting-started
   baseURL: https://api.vergesense.com
   tags:
+  - Space
+  tags_raw:
   - Spaces
   properties:
   - type: OpenAPI
@@ -267,6 +269,8 @@ apis:
   humanURL: https://vergesense.readme.io/reference/reference-getting-started
   baseURL: https://api.vergesense.com
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
