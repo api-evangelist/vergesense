@@ -1,0 +1,919 @@
+openapi: 3.2.0
+info:
+  title: vergesense-api Spaces API
+  version: '2021-03-29'
+servers:
+- url: https://api.vergesense.com
+security:
+- sec0: []
+tags:
+- name: Spaces
+paths:
+  /spaces:
+    get:
+      summary: /spaces
+      description: Get the most recent sensor reports for spaces.
+      operationId: spaces-1
+      parameters:
+      - name: building_ref_id
+        in: query
+        description: Filter on `building_ref_id` to get only the spaces belonging to a particular building.
+        schema:
+          type: string
+      - name: floor_ref_id
+        in: query
+        description: Filter on `floor_ref_id` to get only the spaces belonging to a particular floor.
+        schema:
+          type: string
+      - name: space_ref_id
+        in: query
+        description: Filter on `space_ref_id` to get a single space.
+        schema:
+          type: string
+      - name: space_type
+        in: query
+        description: 'Filter on any space type "key" value returned from the "/spaces/types" API endpoint. Example: `conference_room`'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "[\n    {\n        \"building_ref_id\": \"Building_1\",\n        \"floor_ref_id\": \"Floor_2\",\n        \"space_ref_id\": \"432.3\",\n        \"name\": \"Office 432.3\",\n        \"space_type\": \"office\",\n        \"last_reports\": [\n            {\n                \"id\": \"W91-IGI\",\n                \"person_count\": 2,\n                \"signs_of_life\": null,\n                \"motion_detected\": null,\n                \"timestamp\": \"2019-07-29T18:42:19Z\"\n            }\n        ],\n        \"people\": {\n            \"count\": 2,\n            \"distances\": {\n                \"units\": \"meters\",\n                \"values\": [2.42]\n            }\n        },\n        \"environment\": {\n            \"sensor\": \"W91-IGI\",\n            \"timestamp\": \"2019-07-29T18:42:19Z\",\n            \"humidity\": {\n                \"units\": \"RH\",\n                \"value\": 71.43\n            },\n            \"iaq\": {\n                \"units\": \"UBA\",\n                \"value\": 3.98\n            },\n            \"temperature\": {\n                \"units\": \"C\",\n                \"value\": 17.77\n            }\n        }\n    }\n]"
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    building_ref_id:
+                      type: string
+                      example: Building_1
+                    floor_ref_id:
+                      type: string
+                      example: Floor_2
+                    space_ref_id:
+                      type: string
+                      example: '432.3'
+                    name:
+                      type: string
+                      example: Office 432.3
+                    space_type:
+                      type: string
+                      example: office
+                    last_reports:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: W91-IGI
+                          person_count:
+                            type: integer
+                            example: 2
+                            default: 0
+                          signs_of_life: {}
+                          motion_detected: {}
+                          timestamp:
+                            type: string
+                            example: '2019-07-29T18:42:19Z'
+                    people:
+                      type: object
+                      properties:
+                        count:
+                          type: integer
+                          example: 2
+                          default: 0
+                        distances:
+                          type: object
+                          properties:
+                            units:
+                              type: string
+                              example: meters
+                            values:
+                              type: array
+                              items:
+                                type: number
+                                example: 2.42
+                                default: 0
+                    environment:
+                      type: object
+                      properties:
+                        sensor:
+                          type: string
+                          example: W91-IGI
+                        timestamp:
+                          type: string
+                          example: '2019-07-29T18:42:19Z'
+                        humidity:
+                          type: object
+                          properties:
+                            units:
+                              type: string
+                              example: RH
+                            value:
+                              type: number
+                              example: 71.43
+                              default: 0
+                        iaq:
+                          type: object
+                          properties:
+                            units:
+                              type: string
+                              example: UBA
+                            value:
+                              type: number
+                              example: 3.98
+                              default: 0
+                        temperature:
+                          type: object
+                          properties:
+                            units:
+                              type: string
+                              example: C
+                            value:
+                              type: number
+                              example: 17.77
+                              default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Spaces
+  /spaces/detections:
+    get:
+      summary: /spaces/detections
+      description: 'Fetch all detections for spaces on a given day.
+
+        Response conforms to the JSON API spec https://jsonapi.org/.
+
+        Responses are limited to `10,000` detections after which pagination will take place.'
+      operationId: spaces_detections
+      parameters:
+      - name: date
+        in: query
+        description: Date to fetch thresholds crossings for. Date is required unless a timestamp filter query parameter is provided.
+        schema:
+          type: string
+          format: date
+      - name: space_id
+        in: query
+        description: The space e.g. building, floor, room that the detection was reported for
+        schema:
+          type: integer
+          format: int32
+      - name: filter[timestamp][gte]
+        in: query
+        description: Greater than or equal to the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: filter[timestamp][gt]
+        in: query
+        description: Greater than the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: filter[timestamp][lte]
+        in: query
+        description: Less than or equal to the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: filter[timestamp][lt]
+        in: query
+        description: Less than the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: filter[count][gt]
+        in: query
+        description: Greater than the count of people detected.
+        schema:
+          type: integer
+          format: int32
+      - name: filter[signs_of_life][eq]
+        in: query
+        description: Equal to the signs of life.
+        schema:
+          type: boolean
+      - name: page[number]
+        in: query
+        description: Requested page number. Only used when pagination is applicable.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: vs-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"356161|2021-12-02 00:05:21.833\",\n            \"type\": \"space_detection\",\n            \"attributes\": {\n                \"space_id\": \"356161\",\n                \"timestamp\": \"2021-12-02 00:05:21.833\",\n                \"count\": 0,\n                \"signs_of_life\": 0\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"356161\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n          \"id\": \"364220|2021-12-02 00:04:27.210\",\n          \"type\": \"space_detection\",\n          \"attributes\": {\n              \"space_id\": \"364220\",\n              \"timestamp\": \"2021-12-02 00:04:27.210\",\n              \"count\": 1,\n              \"signs_of_life\": null\n          },\n          \"relationships\": {\n              \"floor\": {\n                  \"data\": {\n                      \"id\": \"364220\",\n                      \"type\": \"floor\"\n                  }\n              }\n          }\n        },  \n        {\n          \"id\": \"364221|2021-12-02 00:05:35.966\",\n          \"type\": \"space_detection\",\n          \"attributes\": {\n              \"space_id\": \"364221\",\n              \"timestamp\": \"2021-12-02 00:05:35.966\",\n              \"count\": 0,\n              \"signs_of_life\": null\n          },\n          \"relationships\": {\n              \"space\": {\n                  \"data\": {\n                      \"id\": \"364221\",\n                      \"type\": \"space\"\n                  }\n              }\n          }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"356161\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"Building 1\",\n                \"building_ref_id\": \"B01\"\n            }\n        },\n        {\n            \"id\": \"364220\",\n            \"type\": \"floor\",\n            \"attributes\": {\n                \"name\": \"Floor 5\",\n                \"floor_ref_id\": \"05\"\n            }\n        },\n        {\n            \"id\": \"364221\",\n            \"type\": \"space\",\n            \"attributes\": {\n                \"name\": \"Conference Room 1\",\n                \"space_ref_id\": \"CR1\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": \"/spaces/detections?date=2021-10-29&page[number]=3&page[size]=2\",\n        \"prev\": null\n    }\n}"
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 356161|2021-12-02 00:05:21.833
+                        type:
+                          type: string
+                          example: space_detection
+                        attributes:
+                          type: object
+                          properties:
+                            space_id:
+                              type: string
+                              example: '356161'
+                            timestamp:
+                              type: string
+                              example: '2021-12-02 00:05:21.833'
+                            count:
+                              type: integer
+                              example: 0
+                              default: 0
+                            signs_of_life:
+                              type: integer
+                              example: 0
+                              default: 0
+                        relationships:
+                          type: object
+                          properties:
+                            building:
+                              type: object
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: '356161'
+                                    type:
+                                      type: string
+                                      example: building
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '356161'
+                        type:
+                          type: string
+                          example: building
+                        attributes:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: Building 1
+                            building_ref_id:
+                              type: string
+                              example: B01
+                  links:
+                    type: object
+                    properties:
+                      next:
+                        type: string
+                        example: /spaces/detections?date=2021-10-29&page[number]=3&page[size]=2
+                      prev: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Spaces
+  /spaces/thresholds/crossings:
+    get:
+      summary: /spaces/thresholds/crossings
+      description: 'Fetch all threshold crossings for spaces on a given day.
+
+        Response conforms to the JSON API spec https://jsonapi.org/.
+
+        Responses are limited to `1,000` threshold crossings after which pagination will take place.'
+      operationId: spaces_thresholds_crossings
+      parameters:
+      - name: date
+        in: query
+        description: Date to fetch thresholds crossings for. Date is required unless a timestamp filter query parameter is provided.
+        schema:
+          type: string
+          format: date
+      - name: filter[timestamp][gte]
+        in: query
+        description: Greater than or equal to the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: filter[timestamp][lte]
+        in: query
+        description: Greater than the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: filter[timestamp][gt]
+        in: query
+        description: Less than or equal to the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: filter[timestamp][lt]
+        in: query
+        description: Less than the timestamp.
+        schema:
+          type: string
+          format: date-time
+      - name: page[number]
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: vs-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Building Crossings:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"422713|86|2021-10-29T00:00:27.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"422713\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:27.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"422713\",\n                        \"type\": \"building\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"422713|86|2021-10-29T00:00:28.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"422713\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:28.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"422713\",\n                        \"type\": \"building\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"422713|86|2021-10-29T00:00:29.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"422713\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:29.000Z\",\n                \"direction\": \"out\"\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"422713\",\n                        \"type\": \"building\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"86\",\n            \"type\": \"threshold\",\n            \"attributes\": {\n                \"external_name\": \"Line 0\",\n                \"external_id\": \"0\"\n            }\n        },\n        {\n            \"id\": \"422713\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"Building 1\",\n                \"building_ref_id\": \"B1\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": null,\n        \"prev\": null\n    }\n}"
+                Building and Floor Crossings:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"422713|86|2021-10-29T00:00:27.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"422713\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:27.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"422713\",\n                        \"type\": \"building\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"426305|86|2021-10-29T00:00:27.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426305\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:27.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"426305\",\n                        \"type\": \"floor\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"86\",\n            \"type\": \"threshold\",\n            \"attributes\": {\n                \"external_name\": \"Line 0\",\n                \"external_id\": \"0\"\n            }\n        },\n        {\n            \"id\": \"422713\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"Building 1\",\n                \"building_ref_id\": \"B1\"\n            }\n        },\n        {\n            \"id\": \"426305\",\n            \"type\": \"floor\",\n            \"attributes\": {\n                \"name\": \"5\",\n                \"floor_ref_id\": \"05\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": \"/spaces/thresholds/crossings?date=2021-10-29&page[number]=2&page[size]=2\",\n        \"prev\": null\n    }\n}"
+                Floor Crossings:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"426305|86|2021-10-29T00:00:27.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426305\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:27.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"426305\",\n                        \"type\": \"floor\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"426305|86|2021-10-29T00:00:28.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426305\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:28.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"426305\",\n                        \"type\": \"floor\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"426305|86|2021-10-29T00:00:29.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426305\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:29.000Z\",\n                \"direction\": \"out\"\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"426305\",\n                        \"type\": \"floor\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"86\",\n            \"type\": \"threshold\",\n            \"attributes\": {\n                \"external_name\": \"Line 0\",\n                \"external_id\": \"0\"\n            }\n        },\n        {\n            \"id\": \"426305\",\n            \"type\": \"floor\",\n            \"attributes\": {\n                \"name\": \"5\",\n                \"floor_ref_id\": \"05\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": \"/spaces/thresholds/crossings?date=2021-10-29&page[number]=2&page[size]=2\",\n        \"prev\": null\n    }\n}"
+                Floor and Space Crossings:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"422799|86|2021-10-29T00:00:27.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"422799\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:27.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"space\": {\n                    \"data\": {\n                        \"id\": \"422799\",\n                        \"type\": \"space\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"426305|86|2021-10-29T00:00:27.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426305\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:27.000Z\",\n                \"direction\": \"out\"\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"426305\",\n                        \"type\": \"floor\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"86\",\n            \"type\": \"threshold\",\n            \"attributes\": {\n                \"external_name\": \"Line 0\",\n                \"external_id\": \"0\"\n            }\n        },\n        {\n            \"id\": \"426305\",\n            \"type\": \"floor\",\n            \"attributes\": {\n                \"name\": \"5\",\n                \"floor_ref_id\": \"05\"\n            }\n        },\n        {\n            \"id\": \"422799\",\n            \"type\": \"space\",\n            \"attributes\": {\n                \"name\": \"Restroom\",\n                \"building_ref_id\": \"R1\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": null,\n        \"prev\": null\n    }\n}"
+                Space Crossings:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"426399|86|2021-10-29T00:00:27.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426399\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:27.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"space\": {\n                    \"data\": {\n                        \"id\": \"426399\",\n                        \"type\": \"space\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"426399|86|2021-10-29T00:00:28.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426399\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:28.000Z\",\n                \"direction\": \"in\"\n            },\n            \"relationships\": {\n                \"space\": {\n                    \"data\": {\n                        \"id\": \"426399\",\n                        \"type\": \"space\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"426399|86|2021-10-29T00:00:29.000Z\",\n            \"type\": \"space_threshold_crossing\",\n            \"attributes\": {\n                \"space_id\": \"426399\",\n                \"threshold_id\": \"86\",\n                \"timestamp\": \"2021-10-29T00:00:29.000Z\",\n                \"direction\": \"out\"\n            },\n            \"relationships\": {\n                \"space\": {\n                    \"data\": {\n                        \"id\": \"426399\",\n                        \"type\": \"space\"\n                    }\n                },\n                \"threshold\": {\n                    \"data\": {\n                        \"id\": \"86\",\n                        \"type\": \"threshold\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"86\",\n            \"type\": \"threshold\",\n            \"attributes\": {\n                \"external_name\": \"Line 0\",\n                \"external_id\": \"0\"\n            }\n        },\n        {\n            \"id\": \"426399\",\n            \"type\": \"space\",\n            \"attributes\": {\n                \"name\": \"Bathroom\",\n                \"space_ref_id\": \"B1\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": \"/spaces/thresholds/crossings?date=2021-10-29&page[number]=2&page[size]=2\",\n        \"prev\": null\n    }\n}"
+              schema:
+                oneOf:
+                - title: Building Crossings
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: 422713|86|2021-10-29T00:00:27.000Z
+                          type:
+                            type: string
+                            example: space_threshold_crossing
+                          attributes:
+                            type: object
+                            properties:
+                              space_id:
+                                type: string
+                                example: '422713'
+                              threshold_id:
+                                type: string
+                                example: '86'
+                              timestamp:
+                                type: string
+                                example: '2021-10-29T00:00:27.000Z'
+                              direction:
+                                type: string
+                                example: in
+                          relationships:
+                            type: object
+                            properties:
+                              building:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '422713'
+                                      type:
+                                        type: string
+                                        example: building
+                              threshold:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '86'
+                                      type:
+                                        type: string
+                                        example: threshold
+                    included:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: '86'
+                          type:
+                            type: string
+                            example: threshold
+                          attributes:
+                            type: object
+                            properties:
+                              external_name:
+                                type: string
+                                example: Line 0
+                              external_id:
+                                type: string
+                                example: '0'
+                    links:
+                      type: object
+                      properties:
+                        next: {}
+                        prev: {}
+                - title: Building and Floor Crossings
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: 422713|86|2021-10-29T00:00:27.000Z
+                          type:
+                            type: string
+                            example: space_threshold_crossing
+                          attributes:
+                            type: object
+                            properties:
+                              space_id:
+                                type: string
+                                example: '422713'
+                              threshold_id:
+                                type: string
+                                example: '86'
+                              timestamp:
+                                type: string
+                                example: '2021-10-29T00:00:27.000Z'
+                              direction:
+                                type: string
+                                example: in
+                          relationships:
+                            type: object
+                            properties:
+                              building:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '422713'
+                                      type:
+                                        type: string
+                                        example: building
+                              threshold:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '86'
+                                      type:
+                                        type: string
+                                        example: threshold
+                    included:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: '86'
+                          type:
+                            type: string
+                            example: threshold
+                          attributes:
+                            type: object
+                            properties:
+                              external_name:
+                                type: string
+                                example: Line 0
+                              external_id:
+                                type: string
+                                example: '0'
+                    links:
+                      type: object
+                      properties:
+                        next:
+                          type: string
+                          example: /spaces/thresholds/crossings?date=2021-10-29&page[number]=2&page[size]=2
+                        prev: {}
+                - title: Floor Crossings
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: 426305|86|2021-10-29T00:00:27.000Z
+                          type:
+                            type: string
+                            example: space_threshold_crossing
+                          attributes:
+                            type: object
+                            properties:
+                              space_id:
+                                type: string
+                                example: '426305'
+                              threshold_id:
+                                type: string
+                                example: '86'
+                              timestamp:
+                                type: string
+                                example: '2021-10-29T00:00:27.000Z'
+                              direction:
+                                type: string
+                                example: in
+                          relationships:
+                            type: object
+                            properties:
+                              floor:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '426305'
+                                      type:
+                                        type: string
+                                        example: floor
+                              threshold:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '86'
+                                      type:
+                                        type: string
+                                        example: threshold
+                    included:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: '86'
+                          type:
+                            type: string
+                            example: threshold
+                          attributes:
+                            type: object
+                            properties:
+                              external_name:
+                                type: string
+                                example: Line 0
+                              external_id:
+                                type: string
+                                example: '0'
+                    links:
+                      type: object
+                      properties:
+                        next:
+                          type: string
+                          example: /spaces/thresholds/crossings?date=2021-10-29&page[number]=2&page[size]=2
+                        prev: {}
+                - title: Floor and Space Crossings
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: 422799|86|2021-10-29T00:00:27.000Z
+                          type:
+                            type: string
+                            example: space_threshold_crossing
+                          attributes:
+                            type: object
+                            properties:
+                              space_id:
+                                type: string
+                                example: '422799'
+                              threshold_id:
+                                type: string
+                                example: '86'
+                              timestamp:
+                                type: string
+                                example: '2021-10-29T00:00:27.000Z'
+                              direction:
+                                type: string
+                                example: in
+                          relationships:
+                            type: object
+                            properties:
+                              space:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '422799'
+                                      type:
+                                        type: string
+                                        example: space
+                              threshold:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '86'
+                                      type:
+                                        type: string
+                                        example: threshold
+                    included:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: '86'
+                          type:
+                            type: string
+                            example: threshold
+                          attributes:
+                            type: object
+                            properties:
+                              external_name:
+                                type: string
+                                example: Line 0
+                              external_id:
+                                type: string
+                                example: '0'
+                    links:
+                      type: object
+                      properties:
+                        next: {}
+                        prev: {}
+                - title: Space Crossings
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: 426399|86|2021-10-29T00:00:27.000Z
+                          type:
+                            type: string
+                            example: space_threshold_crossing
+                          attributes:
+                            type: object
+                            properties:
+                              space_id:
+                                type: string
+                                example: '426399'
+                              threshold_id:
+                                type: string
+                                example: '86'
+                              timestamp:
+                                type: string
+                                example: '2021-10-29T00:00:27.000Z'
+                              direction:
+                                type: string
+                                example: in
+                          relationships:
+                            type: object
+                            properties:
+                              space:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '426399'
+                                      type:
+                                        type: string
+                                        example: space
+                              threshold:
+                                type: object
+                                properties:
+                                  data:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: '86'
+                                      type:
+                                        type: string
+                                        example: threshold
+                    included:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: '86'
+                          type:
+                            type: string
+                            example: threshold
+                          attributes:
+                            type: object
+                            properties:
+                              external_name:
+                                type: string
+                                example: Line 0
+                              external_id:
+                                type: string
+                                example: '0'
+                    links:
+                      type: object
+                      properties:
+                        next:
+                          type: string
+                          example: /spaces/thresholds/crossings?date=2021-10-29&page[number]=2&page[size]=2
+                        prev: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Invalid Date Parameter:
+                  value: "{\n    \"errors\": [\n        {\n            \"status\": \"400\",\n            \"source\": {\n                \"parameter\": \"date\"\n            },\n            \"title\": \"Invalid Parameter\",\n            \"detail\": \"Invalid Date\"\n        }\n    ]\n}"
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: '400'
+                        source:
+                          type: object
+                          properties:
+                            parameter:
+                              type: string
+                              example: date
+                        title:
+                          type: string
+                          example: Invalid Parameter
+                        detail:
+                          type: string
+                          example: Invalid Date
+      deprecated: false
+      tags:
+      - Spaces
+  /spaces/types:
+    get:
+      summary: /spaces/types
+      description: Get the space types.
+      operationId: space_types
+      parameters:
+      - name: vs-api-key
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"data\": [\n      {\n          \"id\": \"2477\",\n          \"type\": \"space_type\",\n          \"attributes\": {\n              \"id\": 2477,\n              \"name\": \"Meeting Room Enclosed\",\n              \"key\": \"meeting_room_enclosed\",\n              \"for_groups\": true,\n              \"shared_space\": true,\n              \"open_seating\": false,\n              \"reservable\": false,\n              \"default_type\": false\n          }\n      }\n   ]\n}"
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '2477'
+                        type:
+                          type: string
+                          example: space_type
+                        attributes:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2477
+                              default: 0
+                            name:
+                              type: string
+                              example: Meeting Room Enclosed
+                            key:
+                              type: string
+                              example: meeting_room_enclosed
+                            for_groups:
+                              type: boolean
+                              example: true
+                              default: true
+                            shared_space:
+                              type: boolean
+                              example: true
+                              default: true
+                            open_seating:
+                              type: boolean
+                              example: false
+                              default: true
+                            reservable:
+                              type: boolean
+                              example: false
+                              default: true
+                            default_type:
+                              type: boolean
+                              example: false
+                              default: true
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Spaces
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: header
+      name: vs-api-key
+      x-default: ''
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true

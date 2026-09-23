@@ -1,0 +1,1945 @@
+openapi: 3.2.0
+info:
+  title: vergesense-api Metrics API
+  version: '2021-03-29'
+servers:
+- url: https://api.vergesense.com
+security:
+- sec0: []
+tags:
+- name: Metrics
+paths:
+  /metrics/hourly/spaces:
+    get:
+      summary: /metrics/hourly/spaces
+      description: Hourly metrics for spaces
+      operationId: metrics_hourly_spaces
+      parameters:
+      - name: sort
+        in: query
+        description: Comma separated list of attributes used to sort the collection. Use a negative(-) sign to reverse the order.
+        schema:
+          type: string
+          default: -space_id,-local_date,-local_hour
+      - name: fields[metrics_hourly_space]
+        in: query
+        description: Limit attributes that are included in a request. Comma separated list of attributes.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        description: Page number for pagination.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: page[size]
+        in: query
+        description: Amount of records to return per page. Limit is 1000.
+        schema:
+          type: integer
+          format: int32
+          default: 250
+      - name: filter[space_type.key]
+        in: query
+        description: Filter metrics based on its associated space type's key.
+        schema:
+          type: string
+      - name: filter[space_type.name]
+        in: query
+        description: Filter metrics based on its associated space type's name.
+        schema:
+          type: string
+      - name: filter[building_ref_id]
+        in: query
+        description: Filter metrics based on its associated space's building_ref_id.
+        schema:
+          type: string
+      - name: filter[floor_ref_id]
+        in: query
+        description: Filter metrics based on its associated space's floor_ref_id.
+        schema:
+          type: string
+      - name: filter[space_ref_id]
+        in: query
+        description: Filter metrics based on its associated space's space_ref_id.
+        schema:
+          type: string
+      - name: filter[local_date][gte]
+        in: query
+        description: Filter metrics where local_date is greater than or equal to value.
+        schema:
+          type: string
+          format: date
+          example: '2020-11-01'
+        example: '2020-11-01'
+      - name: filter[local_date][lte]
+        in: query
+        description: Filter metrics where local_date is less than or equal to value.
+        schema:
+          type: string
+          format: date
+      - name: filter[local_hour][gte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is greater than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 8
+        example: 8
+      - name: filter[local_hour][lte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is less than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 16
+        example: 16
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"1\",\n            \"type\": \"metrics_hourly_space\",\n            \"attributes\": {\n                \"local_date\": \"2021-11-01\",\n                \"local_hour\": 8,\n                \"capacity\": 25,\n                \"avg_person_count\": \"0.5\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 25,\n                \"minutes_actively_occupied\": \"21.6\",\n                \"minutes_passively_occupied\": null,\n                \"avg_pct_utilization\": 0.04,\n                \"min_pct_utilization\": 0.0,\n                \"max_pct_utilization\": 2.0,\n                \"pct_time_actively_occupied\": \"0.36\",\n                \"pct_time_passively_occupied\": null\n            },\n            \"relationships\": {\n                \"space\": {\n                    \"data\": {\n                        \"id\": \"1\",\n                        \"type\": \"space\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"1\",\n            \"type\": \"space\",\n            \"attributes\": {\n                \"name\": \"Conference Room 1\",\n                \"space_ref_id\": \"conference_room_1\",\n                \"building_ref_id\": \"building_1\",\n                \"floor_ref_id\": \"floor_1\",\n            },\n            \"relationships\": {\n                \"space_type\": {\n                    \"data\": {\n                        \"id\": \"3\",\n                        \"type\": \"space_type\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"3\",\n            \"type\": \"space_type\",\n            \"attributes\": {\n                \"name\": \"Conference Room\",\n                \"key\": \"conference_room\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": \"/metrics/hourly/spaces?filter[local_date][gte]=2020-11-01&filter[local_hour][gte]=8&filter[local_hour][lte]=16&page[number]=2&page[size]=0&sort=-local_date,local_hour\",\n        \"prev\": null\n    }\n}"
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"errors\": [\n        {\n            \"status\": \"400\",\n            \"source\": {\n                \"parameter\": \"filter[local_date]\"\n            },\n            \"title\": \"Invalid Parameter\",\n            \"detail\": \"Invalid Date\"\n        }\n    ]\n}"
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: '400'
+                        source:
+                          type: object
+                          properties:
+                            parameter:
+                              type: string
+                              example: filter[local_date]
+                        title:
+                          type: string
+                          example: Invalid Parameter
+                        detail:
+                          type: string
+                          example: Invalid Date
+      deprecated: false
+      tags:
+      - Metrics
+  /metrics/hourly/floors:
+    get:
+      summary: /metrics/hourly/floors
+      description: Hourly metrics for floors
+      operationId: metrics_hourly_floors
+      parameters:
+      - name: sort
+        in: query
+        description: Comma separated list of attributes used to sort the collection. Use a negative(-) sign to reverse the order.
+        schema:
+          type: string
+          default: -floor_id,-local_date,-local_hour
+      - name: fields[metrics_hourly_space]
+        in: query
+        description: Limit attributes that are included in a request. Comma separated list of attributes.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        description: Page number for pagination.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: page[size]
+        in: query
+        description: Amount of records to return per page. Limit is 1000.
+        schema:
+          type: integer
+          format: int32
+          default: 250
+      - name: filter[building_ref_id]
+        in: query
+        description: Filter metrics based on its associated space's building_ref_id.
+        schema:
+          type: string
+      - name: filter[floor_ref_id]
+        in: query
+        description: Filter metrics based on its associated space's floor_ref_id.
+        schema:
+          type: string
+      - name: filter[local_date][gte]
+        in: query
+        description: Filter metrics where local_date is greater than or equal to value.
+        schema:
+          type: string
+          format: date
+          example: '2020-11-01'
+        example: '2020-11-01'
+      - name: filter[local_date][lte]
+        in: query
+        description: Filter metrics where local_date is less than or equal to value.
+        schema:
+          type: string
+          format: date
+      - name: filter[local_hour][gte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is greater than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 8
+        example: 8
+      - name: filter[local_hour][lte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is less than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 16
+        example: 16
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"16541760\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 17,\n                \"capacity\": 150,\n                \"avg_person_count\": \"29.0\",\n                \"avg_occupied_person_count\": \"29.0\",\n                \"min_person_count\": 28,\n                \"max_person_count\": 90,\n                \"minutes_actively_occupied\": \"26.0\",\n                \"minutes_passively_occupied\": \"11.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16540025\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 16,\n                \"capacity\": 150,\n                \"avg_person_count\": \"71.0\",\n                \"avg_occupied_person_count\": \"71.0\",\n                \"min_person_count\": 20,\n                \"max_person_count\": 85,\n                \"minutes_actively_occupied\": \"42.0\",\n                \"minutes_passively_occupied\": \"6.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16538284\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 15,\n                \"capacity\": 150,\n                \"avg_person_count\": \"72.0\",\n                \"avg_occupied_person_count\": \"72.0\",\n                \"min_person_count\": 47,\n                \"max_person_count\": 101,\n                \"minutes_actively_occupied\": \"41.0\",\n                \"minutes_passively_occupied\": \"0.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16536494\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 14,\n                \"capacity\": 150,\n                \"avg_person_count\": \"73.0\",\n                \"avg_occupied_person_count\": \"73.0\",\n                \"min_person_count\": 25,\n                \"max_person_count\": 120,\n                \"minutes_actively_occupied\": \"22.0\",\n                \"minutes_passively_occupied\": \"5.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16534720\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 13,\n                \"capacity\": 150,\n                \"avg_person_count\": \"43.0\",\n                \"avg_occupied_person_count\": \"43.0\",\n                \"min_person_count\": 8,\n                \"max_person_count\": 142,\n                \"minutes_actively_occupied\": \"36.0\",\n                \"minutes_passively_occupied\": \"12.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16531087\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 12,\n                \"capacity\": 150,\n                \"avg_person_count\": \"22.0\",\n                \"avg_occupied_person_count\": \"22.0\",\n                \"min_person_count\": 17,\n                \"max_person_count\": 28,\n                \"minutes_actively_occupied\": \"24.0\",\n                \"minutes_passively_occupied\": \"3.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16529236\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 11,\n                \"capacity\": 150,\n                \"avg_person_count\": \"78.0\",\n                \"avg_occupied_person_count\": \"78.0\",\n                \"min_person_count\": 13,\n                \"max_person_count\": 148,\n                \"minutes_actively_occupied\": \"6.0\",\n                \"minutes_passively_occupied\": \"14.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16527348\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 10,\n                \"capacity\": 150,\n                \"avg_person_count\": \"60.0\",\n                \"avg_occupied_person_count\": \"60.0\",\n                \"min_person_count\": 47,\n                \"max_person_count\": 68,\n                \"minutes_actively_occupied\": \"19.0\",\n                \"minutes_passively_occupied\": \"8.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16525451\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 9,\n                \"capacity\": 150,\n                \"avg_person_count\": \"31.0\",\n                \"avg_occupied_person_count\": \"31.0\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 57,\n                \"minutes_actively_occupied\": \"0.0\",\n                \"minutes_passively_occupied\": \"1.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16523573\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 8,\n                \"capacity\": 150,\n                \"avg_person_count\": \"77.0\",\n                \"avg_occupied_person_count\": \"77.0\",\n                \"min_person_count\": 23,\n                \"max_person_count\": 86,\n                \"minutes_actively_occupied\": \"12.0\",\n                \"minutes_passively_occupied\": \"34.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609070\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16541763\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 17,\n                \"capacity\": 80,\n                \"avg_person_count\": \"27.0\",\n                \"avg_occupied_person_count\": \"27.0\",\n                \"min_person_count\": 16,\n                \"max_person_count\": 53,\n                \"minutes_actively_occupied\": \"26.0\",\n                \"minutes_passively_occupied\": \"21.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16540024\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 16,\n                \"capacity\": 80,\n                \"avg_person_count\": \"25.0\",\n                \"avg_occupied_person_count\": \"25.0\",\n                \"min_person_count\": 17,\n                \"max_person_count\": 41,\n                \"minutes_actively_occupied\": \"26.0\",\n                \"minutes_passively_occupied\": \"2.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16538286\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 15,\n                \"capacity\": 80,\n                \"avg_person_count\": \"15.0\",\n                \"avg_occupied_person_count\": \"15.0\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 23,\n                \"minutes_actively_occupied\": \"14.0\",\n                \"minutes_passively_occupied\": \"3.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16536497\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 14,\n                \"capacity\": 80,\n                \"avg_person_count\": \"8.0\",\n                \"avg_occupied_person_count\": \"8.0\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 58,\n                \"minutes_actively_occupied\": \"12.0\",\n                \"minutes_passively_occupied\": \"23.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16534698\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 13,\n                \"capacity\": 80,\n                \"avg_person_count\": \"48.0\",\n                \"avg_occupied_person_count\": \"48.0\",\n                \"min_person_count\": 24,\n                \"max_person_count\": 79,\n                \"minutes_actively_occupied\": \"26.0\",\n                \"minutes_passively_occupied\": \"3.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16531091\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 12,\n                \"capacity\": 80,\n                \"avg_person_count\": \"32.0\",\n                \"avg_occupied_person_count\": \"32.0\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 80,\n                \"minutes_actively_occupied\": \"14.0\",\n                \"minutes_passively_occupied\": \"9.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16529237\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 11,\n                \"capacity\": 80,\n                \"avg_person_count\": \"66.0\",\n                \"avg_occupied_person_count\": \"66.0\",\n                \"min_person_count\": 9,\n                \"max_person_count\": 73,\n                \"minutes_actively_occupied\": \"0.0\",\n                \"minutes_passively_occupied\": \"4.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16527349\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 10,\n                \"capacity\": 80,\n                \"avg_person_count\": \"13.0\",\n                \"avg_occupied_person_count\": \"13.0\",\n                \"min_person_count\": 9,\n                \"max_person_count\": 48,\n                \"minutes_actively_occupied\": \"26.0\",\n                \"minutes_passively_occupied\": \"4.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16525454\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 9,\n                \"capacity\": 80,\n                \"avg_person_count\": \"6.0\",\n                \"avg_occupied_person_count\": \"6.0\",\n                \"min_person_count\": 4,\n                \"max_person_count\": 53,\n                \"minutes_actively_occupied\": \"28.0\",\n                \"minutes_passively_occupied\": \"1.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16523551\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 8,\n                \"capacity\": 80,\n                \"avg_person_count\": \"7.0\",\n                \"avg_occupied_person_count\": \"7.0\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 17,\n                \"minutes_actively_occupied\": \"6.0\",\n                \"minutes_passively_occupied\": \"20.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609069\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16541761\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 17,\n                \"capacity\": 125,\n                \"avg_person_count\": \"80.0\",\n                \"avg_occupied_person_count\": \"80.0\",\n                \"min_person_count\": 18,\n                \"max_person_count\": 104,\n                \"minutes_actively_occupied\": \"43.0\",\n                \"minutes_passively_occupied\": \"7.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16540026\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 16,\n                \"capacity\": 125,\n                \"avg_person_count\": \"39.0\",\n                \"avg_occupied_person_count\": \"39.0\",\n                \"min_person_count\": 25,\n                \"max_person_count\": 50,\n                \"minutes_actively_occupied\": \"17.0\",\n                \"minutes_passively_occupied\": \"17.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16538266\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 15,\n                \"capacity\": 125,\n                \"avg_person_count\": \"24.0\",\n                \"avg_occupied_person_count\": \"24.0\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 38,\n                \"minutes_actively_occupied\": \"25.0\",\n                \"minutes_passively_occupied\": \"11.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16536488\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 14,\n                \"capacity\": 125,\n                \"avg_person_count\": \"2.0\",\n                \"avg_occupied_person_count\": \"2.0\",\n                \"min_person_count\": 0,\n                \"max_person_count\": 114,\n                \"minutes_actively_occupied\": \"23.0\",\n                \"minutes_passively_occupied\": \"25.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16534707\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 13,\n                \"capacity\": 125,\n                \"avg_person_count\": \"25.0\",\n                \"avg_occupied_person_count\": \"25.0\",\n                \"min_person_count\": 10,\n                \"max_person_count\": 29,\n                \"minutes_actively_occupied\": \"25.0\",\n                \"minutes_passively_occupied\": \"7.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16531089\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 12,\n                \"capacity\": 125,\n                \"avg_person_count\": \"102.0\",\n                \"avg_occupied_person_count\": \"102.0\",\n                \"min_person_count\": 60,\n                \"max_person_count\": 102,\n                \"minutes_actively_occupied\": \"3.0\",\n                \"minutes_passively_occupied\": \"45.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16529235\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 11,\n                \"capacity\": 125,\n                \"avg_person_count\": \"9.0\",\n                \"avg_occupied_person_count\": \"9.0\",\n                \"min_person_count\": 7,\n                \"max_person_count\": 64,\n                \"minutes_actively_occupied\": \"8.0\",\n                \"minutes_passively_occupied\": \"24.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16527350\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 10,\n                \"capacity\": 125,\n                \"avg_person_count\": \"6.0\",\n                \"avg_occupied_person_count\": \"6.0\",\n                \"min_person_count\": 2,\n                \"max_person_count\": 54,\n                \"minutes_actively_occupied\": \"17.0\",\n                \"minutes_passively_occupied\": \"6.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16525450\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 9,\n                \"capacity\": 125,\n                \"avg_person_count\": \"19.0\",\n                \"avg_occupied_person_count\": \"19.0\",\n                \"min_person_count\": 12,\n                \"max_person_count\": 55,\n                \"minutes_actively_occupied\": \"52.0\",\n                \"minutes_passively_occupied\": \"2.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"16523552\",\n            \"type\": \"metrics_hourly_floor\",\n            \"attributes\": {\n                \"local_date\": \"2023-05-16\",\n                \"local_hour\": 8,\n                \"capacity\": 125,\n                \"avg_person_count\": \"88.0\",\n                \"avg_occupied_person_count\": \"88.0\",\n                \"min_person_count\": 26,\n                \"max_person_count\": 116,\n                \"minutes_actively_occupied\": \"15.0\",\n                \"minutes_passively_occupied\": \"8.0\",\n                \"space_count\": 1\n            },\n            \"relationships\": {\n                \"floor\": {\n                    \"data\": {\n                        \"id\": \"609068\",\n                        \"type\": \"floor\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"609070\",\n            \"type\": \"floor\",\n            \"attributes\": {\n                \"name\": \"Floor 3\",\n                \"floor_ref_id\": \"Floor_3\",\n                \"building_ref_id\": \"Lake_Tahoe_Blvd\"\n            }\n        },\n        {\n            \"id\": \"609069\",\n            \"type\": \"floor\",\n            \"attributes\": {\n                \"name\": \"Floor 2\",\n                \"floor_ref_id\": \"Floor_2\",\n                \"building_ref_id\": \"Lake_Tahoe_Blvd\"\n            }\n        },\n        {\n            \"id\": \"609068\",\n            \"type\": \"floor\",\n            \"attributes\": {\n                \"name\": \"Floor 1\",\n                \"floor_ref_id\": \"Floor_1\",\n                \"building_ref_id\": \"Lake_Tahoe_Blvd\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": null,\n        \"prev\": null\n    }\n}"
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '16541760'
+                        type:
+                          type: string
+                          example: metrics_hourly_floor
+                        attributes:
+                          type: object
+                          properties:
+                            local_date:
+                              type: string
+                              example: '2023-05-16'
+                            local_hour:
+                              type: integer
+                              example: 17
+                              default: 0
+                            capacity:
+                              type: integer
+                              example: 150
+                              default: 0
+                            avg_person_count:
+                              type: string
+                              example: '29.0'
+                            avg_occupied_person_count:
+                              type: string
+                              example: '29.0'
+                            min_person_count:
+                              type: integer
+                              example: 28
+                              default: 0
+                            max_person_count:
+                              type: integer
+                              example: 90
+                              default: 0
+                            minutes_actively_occupied:
+                              type: string
+                              example: '26.0'
+                            minutes_passively_occupied:
+                              type: string
+                              example: '11.0'
+                            space_count:
+                              type: integer
+                              example: 1
+                              default: 0
+                        relationships:
+                          type: object
+                          properties:
+                            floor:
+                              type: object
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: '609070'
+                                    type:
+                                      type: string
+                                      example: floor
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '609070'
+                        type:
+                          type: string
+                          example: floor
+                        attributes:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: Floor 3
+                            floor_ref_id:
+                              type: string
+                              example: Floor_3
+                            building_ref_id:
+                              type: string
+                              example: Lake_Tahoe_Blvd
+                  links:
+                    type: object
+                    properties:
+                      next: {}
+                      prev: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"errors\": [\n        {\n            \"status\": \"400\",\n            \"source\": {\n                \"parameter\": \"filter[local_date]\"\n            },\n            \"title\": \"Invalid Parameter\",\n            \"detail\": \"Must include local date filter\"\n        }\n    ]\n}"
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: '400'
+                        source:
+                          type: object
+                          properties:
+                            parameter:
+                              type: string
+                              example: filter[local_date]
+                        title:
+                          type: string
+                          example: Invalid Parameter
+                        detail:
+                          type: string
+                          example: Must include local date filter
+      deprecated: false
+      tags:
+      - Metrics
+  /metrics/hourly/buildings:
+    get:
+      summary: /metrics/hourly/buildings
+      description: Hourly metrics for floors
+      operationId: metrics_hourly_buildings
+      parameters:
+      - name: sort
+        in: query
+        description: Comma separated list of attributes used to sort the collection. Use a negative(-) sign to reverse the order.
+        schema:
+          type: string
+          default: -building_id,-local_date,-local_hour
+      - name: fields[metrics_hourly_building]
+        in: query
+        description: Limit attributes that are included in a request. Comma separated list of attributes.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        description: Page number for pagination.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: page[size]
+        in: query
+        description: Amount of records to return per page. Limit is 1000.
+        schema:
+          type: integer
+          format: int32
+          default: 250
+      - name: filter[building_ref_id]
+        in: query
+        description: Filter metrics based on its associated spaces building_ref_id.
+        schema:
+          type: string
+      - name: filter[local_date][gte]
+        in: query
+        description: Filter metrics where local_date is greater than or equal to value.
+        schema:
+          type: string
+          format: date
+          example: '2020-11-01'
+        example: '2020-11-01'
+      - name: filter[local_date][lte]
+        in: query
+        description: Filter metrics where local_date is less than or equal to value.
+        schema:
+          type: string
+          format: date
+      - name: filter[local_hour][gte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is greater than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 8
+        example: 8
+      - name: filter[local_hour][lte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is less than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 16
+        example: 16
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"27075876\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 207,\n                \"avg_person_count\": \"15.129722222222222246\",\n                \"avg_occupied_person_count\": \"38.7939062799782447\",\n                \"min_person_count\": 2,\n                \"minutes_actively_occupied\": \"682.06\",\n                \"minutes_passively_occupied\": \"439.46\",\n                \"space_count\": 64,\n                \"max_person_count\": 20\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27074576\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 207,\n                \"avg_person_count\": \"24.188055555555555755\",\n                \"avg_occupied_person_count\": \"47.3468921092580684\",\n                \"min_person_count\": 2,\n                \"minutes_actively_occupied\": \"1184.84\",\n                \"minutes_passively_occupied\": \"290.55\",\n                \"space_count\": 64,\n                \"max_person_count\": 29\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27073681\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 207,\n                \"avg_person_count\": \"20.814722222222222302\",\n                \"avg_occupied_person_count\": \"43.553208690739931\",\n                \"min_person_count\": 3,\n                \"minutes_actively_occupied\": \"1137.67\",\n                \"minutes_passively_occupied\": \"303.84\",\n                \"space_count\": 64,\n                \"max_person_count\": 26\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27072733\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 207,\n                \"avg_person_count\": \"17.480833333333333315\",\n                \"avg_occupied_person_count\": \"35.5597397862214497\",\n                \"min_person_count\": 2,\n                \"minutes_actively_occupied\": \"960.33\",\n                \"minutes_passively_occupied\": \"231.85\",\n                \"space_count\": 64,\n                \"max_person_count\": 23\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27080097\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 329,\n                \"avg_person_count\": \"31.905555555555555664\",\n                \"avg_occupied_person_count\": \"48.4701856575564689\",\n                \"min_person_count\": 3,\n                \"minutes_actively_occupied\": \"1396.5\",\n                \"minutes_passively_occupied\": \"271.94\",\n                \"space_count\": 51,\n                \"max_person_count\": 36\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27078567\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 329,\n                \"avg_person_count\": \"35.865833333333333511\",\n                \"avg_occupied_person_count\": \"54.1895980099495119\",\n                \"min_person_count\": 9,\n                \"minutes_actively_occupied\": \"1552.44\",\n                \"minutes_passively_occupied\": \"130.18\",\n                \"space_count\": 51,\n                \"max_person_count\": 43\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27077564\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 329,\n                \"avg_person_count\": \"36.85388888888888851\",\n                \"avg_occupied_person_count\": \"48.6681256862925836\",\n                \"min_person_count\": 9,\n                \"minutes_actively_occupied\": \"1481.01\",\n                \"minutes_passively_occupied\": \"105.05\",\n                \"space_count\": 51,\n                \"max_person_count\": 44\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27076443\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 329,\n                \"avg_person_count\": \"23.441111111111111629\",\n                \"avg_occupied_person_count\": \"38.0205901073172013\",\n                \"min_person_count\": 5,\n                \"minutes_actively_occupied\": \"970.6\",\n                \"minutes_passively_occupied\": \"140.18\",\n                \"space_count\": 51,\n                \"max_person_count\": 33\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27076989\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 192,\n                \"avg_person_count\": \"122.47388888888888817\",\n                \"avg_occupied_person_count\": \"142.4598087909779552\",\n                \"min_person_count\": 28,\n                \"minutes_actively_occupied\": \"3700.32\",\n                \"minutes_passively_occupied\": \"798.98\",\n                \"space_count\": 90,\n                \"max_person_count\": 140\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27075906\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 192,\n                \"avg_person_count\": \"110.8524999999999994274\",\n                \"avg_occupied_person_count\": \"141.0037470662026241\",\n                \"min_person_count\": 38,\n                \"minutes_actively_occupied\": \"3215.04\",\n                \"minutes_passively_occupied\": \"594.38\",\n                \"space_count\": 90,\n                \"max_person_count\": 128\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27074600\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 192,\n                \"avg_person_count\": \"88.2827777777777769396\",\n                \"avg_occupied_person_count\": \"123.7623992688745807\",\n                \"min_person_count\": 30,\n                \"minutes_actively_occupied\": \"2420.92\",\n                \"minutes_passively_occupied\": \"518.88\",\n                \"space_count\": 90,\n                \"max_person_count\": 111\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27073712\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 192,\n                \"avg_person_count\": \"51.548333333333332204\",\n                \"avg_occupied_person_count\": \"81.4879812743433052\",\n                \"min_person_count\": 4,\n                \"minutes_actively_occupied\": \"1546.18\",\n                \"minutes_passively_occupied\": \"326.8\",\n                \"space_count\": 90,\n                \"max_person_count\": 85\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27062459\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"271.6044444444444439304\",\n                \"avg_occupied_person_count\": \"677.690314945926248\",\n                \"min_person_count\": 25,\n                \"minutes_actively_occupied\": \"9851.89\",\n                \"minutes_passively_occupied\": \"12248.02\",\n                \"space_count\": 1026,\n                \"max_person_count\": 306\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27061568\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"362.5838888888888873003\",\n                \"avg_occupied_person_count\": \"747.6580968370733946\",\n                \"min_person_count\": 34,\n                \"minutes_actively_occupied\": \"14923.82\",\n                \"minutes_passively_occupied\": \"7510.71\",\n                \"space_count\": 1026,\n                \"max_person_count\": 421\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27060679\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"353.134166666666667273\",\n                \"avg_occupied_person_count\": \"665.3387234257168043\",\n                \"min_person_count\": 54,\n                \"minutes_actively_occupied\": \"15002.0\",\n                \"minutes_passively_occupied\": \"4183.74\",\n                \"space_count\": 1026,\n                \"max_person_count\": 410\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27059242\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"170.339722222222220338\",\n                \"avg_occupied_person_count\": \"468.4666050979293977\",\n                \"min_person_count\": 24,\n                \"minutes_actively_occupied\": \"7246.55\",\n                \"minutes_passively_occupied\": \"1866.02\",\n                \"space_count\": 1026,\n                \"max_person_count\": 280\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"9609575\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"BOS05\",\n                \"building_ref_id\": \"REF\",\n                \"address\": \"Burlington MA 01803\"\n            }\n        },\n        {\n            \"id\": \"9603129\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"San_Francisco\",\n                \"building_ref_id\": \"sanfrancisco\",\n                \"address\": \"SF CA\"\n            }\n        },\n        {\n            \"id\": \"599212\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"Mexico_City\",\n                \"building_ref_id\": \"Mexico\",\n                \"address\": \"Mexico\"\n            }\n        },\n        {\n            \"id\": \"9559363\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"Singapore\",\n                \"building_ref_id\": \"singapore\",\n                \"address\": \"Singapore\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": null,\n        \"prev\": null\n    }\n}"
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '27075876'
+                        type:
+                          type: string
+                          example: metrics_hourly_building
+                        attributes:
+                          type: object
+                          properties:
+                            local_date:
+                              type: string
+                              example: '2024-10-16'
+                            local_hour:
+                              type: integer
+                              example: 12
+                              default: 0
+                            capacity:
+                              type: integer
+                              example: 207
+                              default: 0
+                            avg_person_count:
+                              type: string
+                              example: '15.129722222222222246'
+                            avg_occupied_person_count:
+                              type: string
+                              example: '38.7939062799782447'
+                            min_person_count:
+                              type: integer
+                              example: 2
+                              default: 0
+                            minutes_actively_occupied:
+                              type: string
+                              example: '682.06'
+                            minutes_passively_occupied:
+                              type: string
+                              example: '439.46'
+                            space_count:
+                              type: integer
+                              example: 64
+                              default: 0
+                            max_person_count:
+                              type: integer
+                              example: 20
+                              default: 0
+                        relationships:
+                          type: object
+                          properties:
+                            building:
+                              type: object
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: '9609575'
+                                    type:
+                                      type: string
+                                      example: building
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '9609575'
+                        type:
+                          type: string
+                          example: building
+                        attributes:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: BOS05
+                            building_ref_id:
+                              type: string
+                              example: REF
+                            address:
+                              type: string
+                              example: Burlington MA 01803
+                  links:
+                    type: object
+                    properties:
+                      next: {}
+                      prev: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"errors\": [\n        {\n            \"status\": \"400\",\n            \"source\": {\n                \"parameter\": \"filter[local_date]\"\n            },\n            \"title\": \"Invalid Parameter\",\n            \"detail\": \"Must include local date filter\"\n        }\n    ]\n}"
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: '400'
+                        source:
+                          type: object
+                          properties:
+                            parameter:
+                              type: string
+                              example: filter[local_date]
+                        title:
+                          type: string
+                          example: Invalid Parameter
+                        detail:
+                          type: string
+                          example: Must include local date filter
+      deprecated: false
+      tags:
+      - Metrics
+  /metrics/hourly/neighborhoods:
+    get:
+      summary: /metrics/hourly/neighborhoods
+      description: Hourly metrics for neighborhoods
+      operationId: metrics-hourly-neighborhoods
+      parameters:
+      - name: sort
+        in: query
+        description: Comma separated list of attributes used to sort the collection. Use a negative(-) sign to reverse the order.
+        schema:
+          type: string
+          default: -neighborhood_id,-local_date,-local_hour
+      - name: fields[metrics_hourly_building]
+        in: query
+        description: Limit attributes that are included in a request. Comma separated list of attributes.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        description: Page number for pagination.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: page[size]
+        in: query
+        description: Amount of records to return per page. Limit is 1000.
+        schema:
+          type: integer
+          format: int32
+          default: 250
+      - name: filter[ref_id]
+        in: query
+        description: Filter metrics for a specific neighborhood
+        schema:
+          type: string
+      - name: filter[local_date][gte]
+        in: query
+        description: Filter metrics where local_date is greater than or equal to value.
+        schema:
+          type: string
+          format: date
+          example: '2020-11-01'
+        example: '2020-11-01'
+      - name: filter[local_date][lte]
+        in: query
+        description: Filter metrics where local_date is less than or equal to value.
+        schema:
+          type: string
+          format: date
+      - name: filter[local_hour][gte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is greater than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 8
+        example: 8
+      - name: filter[local_hour][lte]
+        in: query
+        description: Number between 0-23. Filter metrics where local_hour is less than or equal to value.
+        schema:
+          type: integer
+          format: int32
+          example: 16
+        example: 16
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"27075876\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 207,\n                \"avg_person_count\": \"15.129722222222222246\",\n                \"avg_occupied_person_count\": \"38.7939062799782447\",\n                \"min_person_count\": 2,\n                \"minutes_actively_occupied\": \"682.06\",\n                \"minutes_passively_occupied\": \"439.46\",\n                \"space_count\": 64,\n                \"max_person_count\": 20\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27074576\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 207,\n                \"avg_person_count\": \"24.188055555555555755\",\n                \"avg_occupied_person_count\": \"47.3468921092580684\",\n                \"min_person_count\": 2,\n                \"minutes_actively_occupied\": \"1184.84\",\n                \"minutes_passively_occupied\": \"290.55\",\n                \"space_count\": 64,\n                \"max_person_count\": 29\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27073681\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 207,\n                \"avg_person_count\": \"20.814722222222222302\",\n                \"avg_occupied_person_count\": \"43.553208690739931\",\n                \"min_person_count\": 3,\n                \"minutes_actively_occupied\": \"1137.67\",\n                \"minutes_passively_occupied\": \"303.84\",\n                \"space_count\": 64,\n                \"max_person_count\": 26\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27072733\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 207,\n                \"avg_person_count\": \"17.480833333333333315\",\n                \"avg_occupied_person_count\": \"35.5597397862214497\",\n                \"min_person_count\": 2,\n                \"minutes_actively_occupied\": \"960.33\",\n                \"minutes_passively_occupied\": \"231.85\",\n                \"space_count\": 64,\n                \"max_person_count\": 23\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9609575\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27080097\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 329,\n                \"avg_person_count\": \"31.905555555555555664\",\n                \"avg_occupied_person_count\": \"48.4701856575564689\",\n                \"min_person_count\": 3,\n                \"minutes_actively_occupied\": \"1396.5\",\n                \"minutes_passively_occupied\": \"271.94\",\n                \"space_count\": 51,\n                \"max_person_count\": 36\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27078567\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 329,\n                \"avg_person_count\": \"35.865833333333333511\",\n                \"avg_occupied_person_count\": \"54.1895980099495119\",\n                \"min_person_count\": 9,\n                \"minutes_actively_occupied\": \"1552.44\",\n                \"minutes_passively_occupied\": \"130.18\",\n                \"space_count\": 51,\n                \"max_person_count\": 43\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27077564\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 329,\n                \"avg_person_count\": \"36.85388888888888851\",\n                \"avg_occupied_person_count\": \"48.6681256862925836\",\n                \"min_person_count\": 9,\n                \"minutes_actively_occupied\": \"1481.01\",\n                \"minutes_passively_occupied\": \"105.05\",\n                \"space_count\": 51,\n                \"max_person_count\": 44\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27076443\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 329,\n                \"avg_person_count\": \"23.441111111111111629\",\n                \"avg_occupied_person_count\": \"38.0205901073172013\",\n                \"min_person_count\": 5,\n                \"minutes_actively_occupied\": \"970.6\",\n                \"minutes_passively_occupied\": \"140.18\",\n                \"space_count\": 51,\n                \"max_person_count\": 33\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9603129\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27076989\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 192,\n                \"avg_person_count\": \"122.47388888888888817\",\n                \"avg_occupied_person_count\": \"142.4598087909779552\",\n                \"min_person_count\": 28,\n                \"minutes_actively_occupied\": \"3700.32\",\n                \"minutes_passively_occupied\": \"798.98\",\n                \"space_count\": 90,\n                \"max_person_count\": 140\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27075906\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 192,\n                \"avg_person_count\": \"110.8524999999999994274\",\n                \"avg_occupied_person_count\": \"141.0037470662026241\",\n                \"min_person_count\": 38,\n                \"minutes_actively_occupied\": \"3215.04\",\n                \"minutes_passively_occupied\": \"594.38\",\n                \"space_count\": 90,\n                \"max_person_count\": 128\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27074600\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 192,\n                \"avg_person_count\": \"88.2827777777777769396\",\n                \"avg_occupied_person_count\": \"123.7623992688745807\",\n                \"min_person_count\": 30,\n                \"minutes_actively_occupied\": \"2420.92\",\n                \"minutes_passively_occupied\": \"518.88\",\n                \"space_count\": 90,\n                \"max_person_count\": 111\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27073712\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 192,\n                \"avg_person_count\": \"51.548333333333332204\",\n                \"avg_occupied_person_count\": \"81.4879812743433052\",\n                \"min_person_count\": 4,\n                \"minutes_actively_occupied\": \"1546.18\",\n                \"minutes_passively_occupied\": \"326.8\",\n                \"space_count\": 90,\n                \"max_person_count\": 85\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"599212\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27062459\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 12,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"271.6044444444444439304\",\n                \"avg_occupied_person_count\": \"677.690314945926248\",\n                \"min_person_count\": 25,\n                \"minutes_actively_occupied\": \"9851.89\",\n                \"minutes_passively_occupied\": \"12248.02\",\n                \"space_count\": 1026,\n                \"max_person_count\": 306\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27061568\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 11,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"362.5838888888888873003\",\n                \"avg_occupied_person_count\": \"747.6580968370733946\",\n                \"min_person_count\": 34,\n                \"minutes_actively_occupied\": \"14923.82\",\n                \"minutes_passively_occupied\": \"7510.71\",\n                \"space_count\": 1026,\n                \"max_person_count\": 421\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27060679\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 10,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"353.134166666666667273\",\n                \"avg_occupied_person_count\": \"665.3387234257168043\",\n                \"min_person_count\": 54,\n                \"minutes_actively_occupied\": \"15002.0\",\n                \"minutes_passively_occupied\": \"4183.74\",\n                \"space_count\": 1026,\n                \"max_person_count\": 410\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        },\n        {\n            \"id\": \"27059242\",\n            \"type\": \"metrics_hourly_building\",\n            \"attributes\": {\n                \"local_date\": \"2024-10-16\",\n                \"local_hour\": 9,\n                \"capacity\": 1891,\n                \"avg_person_count\": \"170.339722222222220338\",\n                \"avg_occupied_person_count\": \"468.4666050979293977\",\n                \"min_person_count\": 24,\n                \"minutes_actively_occupied\": \"7246.55\",\n                \"minutes_passively_occupied\": \"1866.02\",\n                \"space_count\": 1026,\n                \"max_person_count\": 280\n            },\n            \"relationships\": {\n                \"building\": {\n                    \"data\": {\n                        \"id\": \"9559363\",\n                        \"type\": \"building\"\n                    }\n                }\n            }\n        }\n    ],\n    \"included\": [\n        {\n            \"id\": \"9609575\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"BOS05\",\n                \"building_ref_id\": \"REF\",\n                \"address\": \"Burlington MA 01803\"\n            }\n        },\n        {\n            \"id\": \"9603129\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"San_Francisco\",\n                \"building_ref_id\": \"sanfrancisco\",\n                \"address\": \"SF CA\"\n            }\n        },\n        {\n            \"id\": \"599212\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"Mexico_City\",\n                \"building_ref_id\": \"Mexico\",\n                \"address\": \"Mexico\"\n            }\n        },\n        {\n            \"id\": \"9559363\",\n            \"type\": \"building\",\n            \"attributes\": {\n                \"name\": \"Singapore\",\n                \"building_ref_id\": \"singapore\",\n                \"address\": \"Singapore\"\n            }\n        }\n    ],\n    \"links\": {\n        \"next\": null,\n        \"prev\": null\n    }\n}"
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '27075876'
+                        type:
+                          type: string
+                          example: metrics_hourly_building
+                        attributes:
+                          type: object
+                          properties:
+                            local_date:
+                              type: string
+                              example: '2024-10-16'
+                            local_hour:
+                              type: integer
+                              example: 12
+                              default: 0
+                            capacity:
+                              type: integer
+                              example: 207
+                              default: 0
+                            avg_person_count:
+                              type: string
+                              example: '15.129722222222222246'
+                            avg_occupied_person_count:
+                              type: string
+                              example: '38.7939062799782447'
+                            min_person_count:
+                              type: integer
+                              example: 2
+                              default: 0
+                            minutes_actively_occupied:
+                              type: string
+                              example: '682.06'
+                            minutes_passively_occupied:
+                              type: string
+                              example: '439.46'
+                            space_count:
+                              type: integer
+                              example: 64
+                              default: 0
+                            max_person_count:
+                              type: integer
+                              example: 20
+                              default: 0
+                        relationships:
+                          type: object
+                          properties:
+                            building:
+                              type: object
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: '9609575'
+                                    type:
+                                      type: string
+                                      example: building
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '9609575'
+                        type:
+                          type: string
+                          example: building
+                        attributes:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: BOS05
+                            building_ref_id:
+                              type: string
+                              example: REF
+                            address:
+                              type: string
+                              example: Burlington MA 01803
+                  links:
+                    type: object
+                    properties:
+                      next: {}
+                      prev: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"errors\": [\n        {\n            \"status\": \"400\",\n            \"source\": {\n                \"parameter\": \"filter[local_date]\"\n            },\n            \"title\": \"Invalid Parameter\",\n            \"detail\": \"Must include local date filter\"\n        }\n    ]\n}"
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: '400'
+                        source:
+                          type: object
+                          properties:
+                            parameter:
+                              type: string
+                              example: filter[local_date]
+                        title:
+                          type: string
+                          example: Invalid Parameter
+                        detail:
+                          type: string
+                          example: Must include local date filter
+      deprecated: false
+      tags:
+      - Metrics
+  /metrics/aggregate/buildings/{building_id}:
+    get:
+      description: Building level metrics, aggregated over the selected time period.
+      operationId: get_metricsaggregatebuildings{building_id}
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                New Example:
+                  summary: New Example
+                  value: ''
+                Result:
+                  summary: Result
+                  value:
+                    data:
+                      id: building:507547:2025-06-15_2025-06-18
+                      type: metrics_aggregate_building
+                      attributes:
+                        avg_person_count: 10.6
+                        peak_person_count: 28
+                        avg_daily_peak_person_count: 17.67
+                        avg_capacity_usage: 7.97
+                        peak_capacity_usage: 21.05
+                        avg_daily_peak_capacity_usage: 13.28
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-15'
+                        end_date: '2025-06-18'
+                        context: this_week
+                    included:
+                    - id: building:507547:2025-06-08_2025-06-11
+                      type: metrics_aggregate_building
+                      attributes:
+                        avg_person_count: 18.61
+                        peak_person_count: 42
+                        avg_daily_peak_person_count: 27
+                        avg_capacity_usage: 13.99
+                        peak_capacity_usage: 31.58
+                        avg_daily_peak_capacity_usage: 20.3
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-08'
+                        end_date: '2025-06-11'
+                        context: same_days_last_week
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing or invalid filter parameters
+                      detail: Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.
+                  summary: Bad Request
+      parameters:
+      - name: building_id
+        in: path
+        required: true
+        description: ID of the building to get metrics for
+        schema:
+          type: integer
+          default: ''
+      - name: filter[local_date][gte]
+        in: query
+        required: false
+        description: Start of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][lte]
+        in: query
+        required: false
+        description: End of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: include[]
+        in: query
+        required: false
+        description: May optionally set this parameter to 'previous' to include comparison data from a previous time range. The previous time range will be automatically generated based on the time range selected.
+        schema:
+          type: string
+          example: previous
+        example: previous
+      - name: filter[date_range]
+        in: query
+        required: false
+        description: 'Must be one of the following: today, this_week, last_week, this_month, last_month, this_year, last_year. A request must include either this date range parameter or start and end date parameters as described above.'
+        schema:
+          type: string
+          example: today
+        example: today
+      - name: filter[days_of_week][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-6. The week starts on Sunday (i.e. 0 = Sunday).
+        schema:
+          type: integer
+          default: ''
+      - name: filter[hours_of_day][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-23. Defaults to working hours.
+        schema:
+          type: integer
+          default: ''
+      summary: /metrics/aggregate/buildings
+      tags:
+      - Metrics
+  /metrics/aggregate/floors/{floor_id}:
+    get:
+      description: Floor level metrics, aggregated over the selected time period.
+      operationId: get_metricsaggregatefloors
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                Result:
+                  summary: Result
+                  value:
+                    data:
+                      id: floor:88412:2025-06-15_2025-06-18
+                      type: metrics_aggregate_floor
+                      attributes:
+                        avg_person_count: 10.6
+                        peak_person_count: 28
+                        avg_daily_peak_person_count: 17.67
+                        avg_capacity_usage: 7.97
+                        peak_capacity_usage: 21.05
+                        avg_daily_peak_capacity_usage: 13.28
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-15'
+                        end_date: '2025-06-18'
+                        context: this_week
+                    included:
+                    - id: floor:88412:2025-06-08_2025-06-11
+                      type: metrics_aggregate_floor
+                      attributes:
+                        avg_person_count: 18.61
+                        peak_person_count: 42
+                        avg_daily_peak_person_count: 27
+                        avg_capacity_usage: 13.99
+                        peak_capacity_usage: 31.58
+                        avg_daily_peak_capacity_usage: 20.3
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-08'
+                        end_date: '2025-06-11'
+                        context: same_days_last_week
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing or invalid filter parameters
+                      detail: Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.
+                  summary: Bad Request
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                Floor not found:
+                  summary: Floor not found
+                  value:
+                    errors:
+                    - status: '404'
+                      title: Floor not found
+                      detail: No floor was found with id 88412.
+      parameters:
+      - name: floor_id
+        in: path
+        required: true
+        description: ID of the floor to get metrics for
+        schema:
+          type: integer
+          default: ''
+      - name: filter[local_date][gte]
+        in: query
+        required: false
+        description: Start of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][lte]
+        in: query
+        required: false
+        description: End of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: include[]
+        in: query
+        required: false
+        description: May optionally set this parameter to 'previous' to include comparison data from a previous time range. The previous time range will be automatically generated based on the time range selected.
+        schema:
+          type: string
+          example: previous
+        example: previous
+      - name: filter[date_range]
+        in: query
+        required: false
+        description: 'Must be one of the following: today, this_week, last_week, this_month, last_month, this_year, last_year. A request must include either this date range parameter or start and end date parameters as described above.'
+        schema:
+          type: string
+          example: today
+        example: today
+      - name: filter[days_of_week][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-6. The week starts on Sunday (i.e. 0 = Sunday).
+        schema:
+          type: integer
+          default: ''
+      - name: filter[hours_of_day][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-23. Defaults to working hours.
+        schema:
+          type: integer
+          default: ''
+      summary: /metrics/aggregate/floors
+      x-internal: false
+      tags:
+      - Metrics
+  /metrics/aggregate/spaces/{space_id}:
+    get:
+      description: Space level metrics, aggregated over the selected time period.
+      operationId: get_metricsaggregatespace
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                Result:
+                  summary: Result
+                  value:
+                    data:
+                      id: space:1902445:2025-06-15_2025-06-18
+                      type: metrics_aggregate_space
+                      attributes:
+                        avg_person_count: 10.6
+                        peak_person_count: 28
+                        avg_daily_peak_person_count: 17.67
+                        avg_capacity_usage: 7.97
+                        peak_capacity_usage: 21.05
+                        avg_daily_peak_capacity_usage: 13.28
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-15'
+                        end_date: '2025-06-18'
+                        context: this_week
+                    included:
+                    - id: space:1902445:2025-06-08_2025-06-11
+                      type: metrics_aggregate_space
+                      attributes:
+                        avg_person_count: 18.61
+                        peak_person_count: 42
+                        avg_daily_peak_person_count: 27
+                        avg_capacity_usage: 13.99
+                        peak_capacity_usage: 31.58
+                        avg_daily_peak_capacity_usage: 20.3
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-08'
+                        end_date: '2025-06-11'
+                        context: same_days_last_week
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing or invalid filter parameters
+                      detail: Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.
+                  summary: Bad Request
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                Space not found:
+                  summary: Space not found
+                  value:
+                    errors:
+                    - status: '404'
+                      title: Space not found
+                      detail: No space was found with id 1902445.
+      parameters:
+      - name: space_id
+        in: path
+        required: true
+        description: ID of the space to get metrics for
+        schema:
+          type: integer
+          default: ''
+      - name: filter[local_date][gte]
+        in: query
+        required: false
+        description: Start of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][lte]
+        in: query
+        required: false
+        description: End of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: include[]
+        in: query
+        required: false
+        description: May optionally set this parameter to 'previous' to include comparison data from a previous time range. The previous time range will be automatically generated based on the time range selected.
+        schema:
+          type: string
+          example: previous
+        example: previous
+      - name: filter[date_range]
+        in: query
+        required: false
+        description: 'Must be one of the following: today, this_week, last_week, this_month, last_month, this_year, last_year. A request must include either this date range parameter or start and end date parameters as described above.'
+        schema:
+          type: string
+          example: today
+        example: today
+      - name: filter[days_of_week][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-6. The week starts on Sunday (i.e. 0 = Sunday).
+        schema:
+          type: integer
+          default: ''
+      - name: filter[hours_of_day][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-23. Defaults to working hours.
+        schema:
+          type: integer
+          default: ''
+      summary: /metrics/aggregate/spaces/:space_id
+      x-internal: false
+      tags:
+      - Metrics
+  /metrics/aggregate/neighborhoods/{neighborhood_id}:
+    get:
+      description: Neighborhood level metrics, aggregated over the selected time period.
+      operationId: get_metricsaggregateneighborhoods
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                Result:
+                  summary: Result
+                  value:
+                    data:
+                      id: neighborhood:44219:2025-06-15_2025-06-18
+                      type: metrics_aggregate_neighborhood
+                      attributes:
+                        avg_person_count: 10.6
+                        peak_person_count: 28
+                        avg_daily_peak_person_count: 17.67
+                        avg_capacity_usage: 7.97
+                        peak_capacity_usage: 21.05
+                        avg_daily_peak_capacity_usage: 13.28
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-15'
+                        end_date: '2025-06-18'
+                        context: this_week
+                    included:
+                    - id: neighborhood:44219:2025-06-08_2025-06-11
+                      type: metrics_aggregate_neighborhood
+                      attributes:
+                        avg_person_count: 18.61
+                        peak_person_count: 42
+                        avg_daily_peak_person_count: 27
+                        avg_capacity_usage: 13.99
+                        peak_capacity_usage: 31.58
+                        avg_daily_peak_capacity_usage: 20.3
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-08'
+                        end_date: '2025-06-11'
+                        context: same_days_last_week
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing or invalid filter parameters
+                      detail: Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.
+                  summary: Bad Request
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                Neighborhood not found:
+                  summary: Neighborhood not found
+                  value:
+                    errors:
+                    - status: '404'
+                      title: Neighborhood not found
+                      detail: No neighborhood was found with id 44219.
+      parameters:
+      - name: neighborhood_id
+        in: path
+        required: true
+        description: Zone ID of the neighborhood to get metrics for. This is the neighborhood's zone ID, not its neighborhood record ID.
+        schema:
+          type: integer
+          default: ''
+      - name: filter[local_date][gte]
+        in: query
+        required: false
+        description: Start of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][lte]
+        in: query
+        required: false
+        description: End of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: include[]
+        in: query
+        required: false
+        description: May optionally set this parameter to 'previous' to include comparison data from a previous time range. The previous time range will be automatically generated based on the time range selected.
+        schema:
+          type: string
+          example: previous
+        example: previous
+      - name: filter[date_range]
+        in: query
+        required: false
+        description: 'Must be one of the following: today, this_week, last_week, this_month, last_month, this_year, last_year. A request must include either this date range parameter or start and end date parameters as described above.'
+        schema:
+          type: string
+          example: today
+        example: today
+      - name: filter[days_of_week][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-6. The week starts on Sunday (i.e. 0 = Sunday).
+        schema:
+          type: integer
+          default: ''
+      - name: filter[hours_of_day][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-23. Defaults to working hours.
+        schema:
+          type: integer
+          default: ''
+      summary: /metrics/aggregate/neighborhoods
+      x-internal: false
+      tags:
+      - Metrics
+  /metrics/aggregate/space_groups:
+    get:
+      description: Space group level metrics for one floor, aggregated over the selected time period.
+      operationId: get_metricsaggregatespacegroups
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                Result:
+                  summary: Result
+                  value:
+                    data:
+                      id: space_group:88412-7552:2025-06-15_2025-06-18
+                      type: metrics_aggregate_space_group
+                      attributes:
+                        avg_person_count: 10.6
+                        peak_person_count: 28
+                        avg_daily_peak_person_count: 17.67
+                        avg_capacity_usage: 7.97
+                        peak_capacity_usage: 21.05
+                        avg_daily_peak_capacity_usage: 13.28
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-15'
+                        end_date: '2025-06-18'
+                        context: this_week
+                    included:
+                    - id: space_group:88412-7552:2025-06-08_2025-06-11
+                      type: metrics_aggregate_space_group
+                      attributes:
+                        avg_person_count: 18.61
+                        peak_person_count: 42
+                        avg_daily_peak_person_count: 27
+                        avg_capacity_usage: 13.99
+                        peak_capacity_usage: 31.58
+                        avg_daily_peak_capacity_usage: 20.3
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-08'
+                        end_date: '2025-06-11'
+                        context: same_days_last_week
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing or invalid filter parameters
+                      detail: Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.
+                  summary: Bad Request
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                Space group not found:
+                  summary: Space group not found
+                  value:
+                    errors:
+                    - status: '404'
+                      title: Space group not found
+                      detail: No space group was found for zone id 88412-7552.
+      parameters:
+      - name: zone_id
+        in: query
+        required: true
+        description: Compound ID of the space group, in the form {floor_id}-{space_group_id}, for example 88412-7552. Required.
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][gte]
+        in: query
+        required: false
+        description: Start of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][lte]
+        in: query
+        required: false
+        description: End of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: include[]
+        in: query
+        required: false
+        description: May optionally set this parameter to 'previous' to include comparison data from a previous time range. The previous time range will be automatically generated based on the time range selected.
+        schema:
+          type: string
+          example: previous
+        example: previous
+      - name: filter[date_range]
+        in: query
+        required: false
+        description: 'Must be one of the following: today, this_week, last_week, this_month, last_month, this_year, last_year. A request must include either this date range parameter or start and end date parameters as described above.'
+        schema:
+          type: string
+          example: today
+        example: today
+      - name: filter[days_of_week][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-6. The week starts on Sunday (i.e. 0 = Sunday).
+        schema:
+          type: integer
+          default: ''
+      - name: filter[hours_of_day][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-23. Defaults to working hours.
+        schema:
+          type: integer
+          default: ''
+      summary: /metrics/aggregate/space_groups
+      x-internal: false
+      tags:
+      - Metrics
+  /metrics/aggregate/space_types:
+    get:
+      description: Space type level metrics for one floor, aggregated over the selected time period.
+      operationId: get_metricsaggregatespacetypes
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                Result:
+                  summary: Result
+                  value:
+                    data:
+                      id: space_type:88412-14:2025-06-15_2025-06-18
+                      type: metrics_aggregate_space_type
+                      attributes:
+                        avg_person_count: 10.6
+                        peak_person_count: 28
+                        avg_daily_peak_person_count: 17.67
+                        avg_capacity_usage: 7.97
+                        peak_capacity_usage: 21.05
+                        avg_daily_peak_capacity_usage: 13.28
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-15'
+                        end_date: '2025-06-18'
+                        context: this_week
+                    included:
+                    - id: space_type:88412-14:2025-06-08_2025-06-11
+                      type: metrics_aggregate_space_type
+                      attributes:
+                        avg_person_count: 18.61
+                        peak_person_count: 42
+                        avg_daily_peak_person_count: 27
+                        avg_capacity_usage: 13.99
+                        peak_capacity_usage: 31.58
+                        avg_daily_peak_capacity_usage: 20.3
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-08'
+                        end_date: '2025-06-11'
+                        context: same_days_last_week
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing or invalid filter parameters
+                      detail: Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.
+                  summary: Bad Request
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                Space type not found:
+                  summary: Space type not found
+                  value:
+                    errors:
+                    - status: '404'
+                      title: Space type not found
+                      detail: No space type was found for zone id 88412-open_focus.
+      parameters:
+      - name: zone_id
+        in: query
+        required: true
+        description: Compound ID of the space type, in the form {floor_id}-{space_type_key}, for example 88412-open_focus. Required.
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][gte]
+        in: query
+        required: false
+        description: Start of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][lte]
+        in: query
+        required: false
+        description: End of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: include[]
+        in: query
+        required: false
+        description: May optionally set this parameter to 'previous' to include comparison data from a previous time range. The previous time range will be automatically generated based on the time range selected.
+        schema:
+          type: string
+          example: previous
+        example: previous
+      - name: filter[date_range]
+        in: query
+        required: false
+        description: 'Must be one of the following: today, this_week, last_week, this_month, last_month, this_year, last_year. A request must include either this date range parameter or start and end date parameters as described above.'
+        schema:
+          type: string
+          example: today
+        example: today
+      - name: filter[days_of_week][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-6. The week starts on Sunday (i.e. 0 = Sunday).
+        schema:
+          type: integer
+          default: ''
+      - name: filter[hours_of_day][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-23. Defaults to working hours.
+        schema:
+          type: integer
+          default: ''
+      summary: /metrics/aggregate/space_types
+      x-internal: false
+      tags:
+      - Metrics
+  /metrics/aggregate/portfolio:
+    get:
+      description: Portfolio level metrics across every building you can access, aggregated over the selected time period.
+      operationId: get_metricsaggregateportfolio
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                Result:
+                  summary: Result
+                  value:
+                    data:
+                      id: portfolio:642:2025-06-15_2025-06-18
+                      type: metrics_aggregate_portfolio
+                      attributes:
+                        avg_person_count: 10.6
+                        peak_person_count: 28
+                        avg_daily_peak_person_count: 17.67
+                        avg_capacity_usage: 7.97
+                        peak_capacity_usage: 21.05
+                        avg_daily_peak_capacity_usage: 13.28
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-15'
+                        end_date: '2025-06-18'
+                        context: this_week
+                    included:
+                    - id: portfolio:642:2025-06-08_2025-06-11
+                      type: metrics_aggregate_portfolio
+                      attributes:
+                        avg_person_count: 18.61
+                        peak_person_count: 42
+                        avg_daily_peak_person_count: 27
+                        avg_capacity_usage: 13.99
+                        peak_capacity_usage: 31.58
+                        avg_daily_peak_capacity_usage: 20.3
+                      meta:
+                        duration_in_days: 4
+                        start_date: '2025-06-08'
+                        end_date: '2025-06-11'
+                        context: same_days_last_week
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing or invalid filter parameters
+                      detail: Both `filter[local_date][gte]` and `filter[local_date][lte]` must be provided.
+                  summary: Bad Request
+      parameters:
+      - name: filter[local_date][gte]
+        in: query
+        required: false
+        description: Start of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: filter[local_date][lte]
+        in: query
+        required: false
+        description: End of the time interval (interval includes this date).
+        schema:
+          type: string
+          default: ''
+      - name: include[]
+        in: query
+        required: false
+        description: May optionally set this parameter to 'previous' to include comparison data from a previous time range. The previous time range will be automatically generated based on the time range selected.
+        schema:
+          type: string
+          example: previous
+        example: previous
+      - name: filter[date_range]
+        in: query
+        required: false
+        description: 'Must be one of the following: today, this_week, last_week, this_month, last_month, this_year, last_year. A request must include either this date range parameter or start and end date parameters as described above.'
+        schema:
+          type: string
+          example: today
+        example: today
+      - name: filter[days_of_week][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-6. The week starts on Sunday (i.e. 0 = Sunday).
+        schema:
+          type: integer
+          default: ''
+      - name: filter[hours_of_day][]
+        in: query
+        required: false
+        description: Must be an integer within the range of 0-23. Defaults to working hours.
+        schema:
+          type: integer
+          default: ''
+      summary: /metrics/aggregate/portfolio
+      x-internal: false
+      tags:
+      - Metrics
+  /metrics/aggregate/spaces:
+    get:
+      summary: /metrics/aggregate/spaces
+      description: Metrics for all spaces in a building, or company
+      operationId: metrics
+      parameters:
+      - name: filter[local_date][gte]
+        in: query
+        description: Timestamp (UTC) that you would like the results to be greater than or equal to.
+        schema:
+          type: string
+          format: date-time
+          example: '2025-05-05'
+        example: '2025-05-05'
+      - name: filter[local_date][lte]
+        in: query
+        description: Timestamp (UTC) that you would like the results to be less than or equal to.
+        schema:
+          type: string
+          format: date-time
+          example: '2025-05-06'
+        example: '2025-05-06'
+      - name: filter[building_id]
+        in: query
+        description: Filter metrics based on one building.
+        schema:
+          type: integer
+          format: int32
+      - name: filter[hours_of_day]
+        in: query
+        description: 'Hours of the day to include in metrics. Example: [0, 5, 6, 13]'
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int32
+      - name: filter[days_of_week]
+        in: query
+        description: 'Days of the week to include in metrics. Example: [0, 1, 2]'
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        description: Page number for pagination.
+        schema:
+          type: integer
+          format: int32
+      - name: page[size]
+        in: query
+        description: Page size for pagination.
+        schema:
+          type: integer
+          format: int32
+      - name: include[]
+        in: query
+        description: 'Joined data to include with your metrics. Options: ''space'', ''space_type'', and ''space_groups'''
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"data\": [\n    {\n      \"id\": \"415476\",\n      \"type\": \"space_metrics\",\n      \"attributes\": {\n        \"space_id\": 415476,\n        \"capacity\": 3,\n        \"avg_person_count\": 0.2,\n        \"avg_person_count_when_used\": 1,\n        \"peak_person_count\": 2,\n        \"avg_daily_peak_person_count\": 2,\n        \"active_minutes_used\": 51,\n        \"passive_minutes_used\": 38,\n        \"total_hours_actively_occupied\": 9,\n        \"pct_active_time\": 0.09444444444444444,\n        \"pct_passive_time\": 0.07037037037037037,\n        \"avg_capacity_usage\": 0.07,\n        \"avg_capacity_usage_when_used\": 0.33\n      },\n      \"relationships\": {\n        \"space_type\": {\n          \"links\": {\n            \"related\": \"/api/v1/space_types?filter[daily_space_metric_id]=\"\n          }\n        },\n        \"space\": {\n          \"links\": {\n            \"related\": \"/api/v1/spaces/415476\"\n          }\n        },\n        \"space_groups\": {\n          \"links\": {\n            \"related\": \"/api/v1/space_groups?filter[space_id]=\"\n          }\n        }\n      }\n    },\n    {\n      \"id\": \"415495\",\n      \"type\": \"space_metrics\",\n      \"attributes\": {\n        \"space_id\": 415495,\n        \"capacity\": 1,\n        \"avg_person_count\": 0,\n        \"avg_person_count_when_used\": 2,\n        \"peak_person_count\": 0,\n        \"avg_daily_peak_person_count\": 0,\n        \"active_minutes_used\": 60,\n        \"passive_minutes_used\": 54,\n        \"total_hours_actively_occupied\": 9,\n        \"pct_active_time\": 0.1111111111111111,\n        \"pct_passive_time\": 0.1,\n        \"avg_capacity_usage\": 0,\n        \"avg_capacity_usage_when_used\": 1.56\n      },\n      \"relationships\": {\n        \"space_type\": {\n          \"links\": {\n            \"related\": \"/api/v1/space_types?filter[daily_space_metric_id]=\"\n          }\n        },\n        \"space\": {\n          \"links\": {\n            \"related\": \"/api/v1/spaces/415495\"\n          }\n        },\n        \"space_groups\": {\n          \"links\": {\n            \"related\": \"/api/v1/space_groups?filter[space_id]=\"\n          }\n        }\n      }\n    },\n    {\n      \"id\": \"415501\",\n      \"type\": \"space_metrics\",\n      \"attributes\": {\n        \"space_id\": 415501,\n        \"capacity\": 1,\n        \"avg_person_count\": 0,\n        \"avg_person_count_when_used\": 1,\n        \"peak_person_count\": 0,\n        \"avg_daily_peak_person_count\": 0,\n        \"active_minutes_used\": 104,\n        \"passive_minutes_used\": 78,\n        \"total_hours_actively_occupied\": 9,\n        \"pct_active_time\": 0.1925925925925926,\n        \"pct_passive_time\": 0.14444444444444443,\n        \"avg_capacity_usage\": 0,\n        \"avg_capacity_usage_when_used\": 1.22\n      },\n      \"relationships\": {\n        \"space_type\": {\n          \"links\": {\n            \"related\": \"/api/v1/space_types?filter[daily_space_metric_id]=\"\n          }\n        },\n        \"space\": {\n          \"links\": {\n            \"related\": \"/api/v1/spaces/415501\"\n          }\n        },\n        \"space_groups\": {\n          \"links\": {\n            \"related\": \"/api/v1/space_groups?filter[space_id]=\"\n          }\n        }\n      }\n    }\n  ],\n  \"meta\": {}\n}"
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '415476'
+                        type:
+                          type: string
+                          example: space_metrics
+                        attributes:
+                          type: object
+                          properties:
+                            space_id:
+                              type: integer
+                              example: 415476
+                              default: 0
+                            capacity:
+                              type: integer
+                              example: 3
+                              default: 0
+                            avg_person_count:
+                              type: number
+                              example: 0.2
+                              default: 0
+                            avg_person_count_when_used:
+                              type: integer
+                              example: 1
+                              default: 0
+                            peak_person_count:
+                              type: integer
+                              example: 2
+                              default: 0
+                            avg_daily_peak_person_count:
+                              type: integer
+                              example: 2
+                              default: 0
+                            active_minutes_used:
+                              type: integer
+                              example: 51
+                              default: 0
+                            passive_minutes_used:
+                              type: integer
+                              example: 38
+                              default: 0
+                            total_hours_actively_occupied:
+                              type: integer
+                              example: 9
+                              default: 0
+                            pct_active_time:
+                              type: number
+                              example: 0.09444444444444444
+                              default: 0
+                            pct_passive_time:
+                              type: number
+                              example: 0.07037037037037037
+                              default: 0
+                            avg_capacity_usage:
+                              type: number
+                              example: 0.07
+                              default: 0
+                            avg_capacity_usage_when_used:
+                              type: number
+                              example: 0.33
+                              default: 0
+                        relationships:
+                          type: object
+                          properties:
+                            space_type:
+                              type: object
+                              properties:
+                                links:
+                                  type: object
+                                  properties:
+                                    related:
+                                      type: string
+                                      example: /api/v1/space_types?filter[daily_space_metric_id]=
+                            space:
+                              type: object
+                              properties:
+                                links:
+                                  type: object
+                                  properties:
+                                    related:
+                                      type: string
+                                      example: /api/v1/spaces/415476
+                            space_groups:
+                              type: object
+                              properties:
+                                links:
+                                  type: object
+                                  properties:
+                                    related:
+                                      type: string
+                                      example: /api/v1/space_groups?filter[space_id]=
+                  meta:
+                    type: object
+                    properties: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Metrics
+  /metrics/spaces:
+    get:
+      summary: /metrics/spaces
+      description: Metrics for spaces aggregated by the requested interval
+      operationId: metrics_spaces
+      parameters:
+      - name: filter[timestamp][gte]
+        in: query
+        description: Timestamp (UTC) that you would like the results to be greater than or equal to.
+        schema:
+          type: string
+          format: date-time
+          example: '2025-05-05'
+        example: '2025-05-05'
+      - name: filter[timestamp][lte]
+        in: query
+        description: Timestamp (UTC) that you would like the results to be less than or equal to.
+        schema:
+          type: string
+          format: date-time
+          example: '2025-05-06'
+        example: '2025-05-06'
+      - name: building_id
+        in: query
+        description: Filter metrics based on its associated space's unique building_id.
+        schema:
+          type: integer
+          format: int32
+      - name: building_ref_id
+        in: query
+        description: Filter metrics based on its associated space's building_ref_id.
+        schema:
+          type: string
+      - name: interval
+        in: query
+        description: Interval (in minutes) to use for the bucketing of metrics data.
+        schema:
+          type: integer
+          format: int32
+          example: 60
+        example: 60
+        required: true
+      - name: page[number]
+        in: query
+        description: Page number for pagination.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: page[size]
+        in: query
+        description: Number of spaces to include per page. Limit is 1000.
+        schema:
+          type: integer
+          format: int32
+          default: 250
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"data\": [\n        {\n            \"id\": \"95871\",\n            \"type\": \"aggregated_space_metrics\",\n            \"attributes\": {\n                \"space_ref_id\": \"CONF1\",\n                \"floor_ref_id\": \"FL1\",\n                \"building_ref_id\": \"B1\",\n                \"metrics\": [\n                    {\n                        \"avg_person_count\": 0.0,\n                        \"min_person_count\": 0,\n                        \"max_person_count\": 0,\n                        \"minutes_actively_occupied\": 0.0,\n                        \"minutes_passively_occupied\": null,\n                        \"timestamp\": \"2023-01-30T14:30:00.000Z\",\n                        \"mode_person_count\": 0,\n                        \"avg_person_count_when_used\": 0.0\n                    },\n                    {\n                        \"avg_person_count\": 5.0,\n                        \"min_person_count\": 0,\n                        \"max_person_count\": 10,\n                        \"minutes_actively_occupied\": 8.0,\n                        \"minutes_passively_occupied\": null,\n                        \"timestamp\": \"2023-01-30T14:40:00.000Z\",\n                        \"mode_person_count\": 4,\n                        \"avg_person_count_when_used\": 7.0\n                    },\n                    {\n                        \"avg_person_count\": 2.0,\n                        \"min_person_count\": 0,\n                        \"max_person_count\": 4,\n                        \"minutes_actively_occupied\": 5.0,\n                        \"minutes_passively_occupied\": 3.0,\n                        \"timestamp\": \"2023-01-30T14:50:00.000Z\",\n                        \"mode_person_count\": 4,\n                        \"avg_person_count_when_used\": 2.0\n                    }\n                ]\n            }\n        }\n    ],\n    \"meta\": {\n        \"interval\": \"10\"\n    },\n    \"links\": {\n        \"next\": \"/metrics/spaces?filter[timestamp][gte]=2023-01-30T14:30:00Z&filter[timestamp][lte]=2023-01-30T15:00:00Z&interval=10&page[number]=2&page[size]=1\",\n        \"prev\": null\n    }\n}"
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: '95871'
+                        type:
+                          type: string
+                          example: aggregated_space_metrics
+                        attributes:
+                          type: object
+                          properties:
+                            space_ref_id:
+                              type: string
+                              example: CONF1
+                            floor_ref_id:
+                              type: string
+                              example: FL1
+                            building_ref_id:
+                              type: string
+                              example: B1
+                            metrics:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  avg_person_count:
+                                    type: integer
+                                    example: 0
+                                    default: 0
+                                  min_person_count:
+                                    type: integer
+                                    example: 0
+                                    default: 0
+                                  max_person_count:
+                                    type: integer
+                                    example: 0
+                                    default: 0
+                                  minutes_actively_occupied:
+                                    type: integer
+                                    example: 0
+                                    default: 0
+                                  minutes_passively_occupied: {}
+                                  timestamp:
+                                    type: string
+                                    example: '2023-01-30T14:30:00.000Z'
+                                  mode_person_count:
+                                    type: integer
+                                    example: 0
+                                    default: 0
+                                  avg_person_count_when_used:
+                                    type: integer
+                                    example: 0
+                                    default: 0
+                  meta:
+                    type: object
+                    properties:
+                      interval:
+                        type: string
+                        example: '10'
+                  links:
+                    type: object
+                    properties:
+                      next:
+                        type: string
+                        example: /metrics/spaces?filter[timestamp][gte]=2023-01-30T14:30:00Z&filter[timestamp][lte]=2023-01-30T15:00:00Z&interval=10&page[number]=2&page[size]=1
+                      prev: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"errors\": [\n        {\n            \"status\": \"400\",\n            \"source\": {\n                \"parameter\": \"filter[timestamp]\"\n            },\n            \"title\": \"Invalid Parameter\",\n            \"detail\": \"Timestamp order incorrect\"\n        }\n    ]\n}"
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: '400'
+                        source:
+                          type: object
+                          properties:
+                            parameter:
+                              type: string
+                              example: filter[timestamp]
+                        title:
+                          type: string
+                          example: Invalid Parameter
+                        detail:
+                          type: string
+                          example: Timestamp order incorrect
+      deprecated: false
+      tags:
+      - Metrics
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: header
+      name: vs-api-key
+      x-default: ''
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true

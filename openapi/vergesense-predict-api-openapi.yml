@@ -1,0 +1,409 @@
+openapi: 3.2.0
+info:
+  title: vergesense-api Predict API
+  version: '2021-03-29'
+servers:
+- url: https://api.vergesense.com
+security:
+- sec0: []
+tags:
+- name: Predict
+paths:
+  /predict/space_usage:
+    post:
+      description: Given a geojson of spaces on a floor, this endpoint would return the predicted number of people using these spaces when the requested number of people are attempting to use the spaces provided.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                OK:
+                  summary: OK
+                  value:
+                    data:
+                    - id: predict-spaces-10
+                      type: space_usage_prediction
+                      attributes:
+                        person_count: 10
+                        spaces:
+                        - id: 63584e0184e36d00352450d4
+                          capacity: 4
+                          normalized_space_type: enclosed_collab
+                          seated: 3
+                        - id: 63584e0184e36d00352450d6
+                          capacity: 1
+                          normalized_space_type: enclosed_focus
+                          seated: 1
+                        - id: 63584e0184e36d00352450d7
+                          capacity: 1
+                          normalized_space_type: open_focus
+                          seated: 1
+                        - id: 63584e0184e36d00352450d8
+                          capacity: 1
+                          normalized_space_type: open_focus
+                          seated: 0
+                        - id: 63584e0184e36d00352450d9
+                          capacity: 6
+                          normalized_space_type: open_collab
+                          seated: 4
+                        unseated:
+                          enclosed_collab: 0
+                          enclosed_focus: 0
+                          open_focus: 1
+                          open_collab: 0
+                    - id: predict-spaces-13
+                      type: space_usage_prediction
+                      attributes:
+                        person_count: 13
+                        spaces:
+                        - id: 63584e0184e36d00352450d4
+                          capacity: 4
+                          normalized_space_type: enclosed_collab
+                          seated: 4
+                        - id: 63584e0184e36d00352450d6
+                          capacity: 1
+                          normalized_space_type: enclosed_focus
+                          seated: 1
+                        - id: 63584e0184e36d00352450d7
+                          capacity: 1
+                          normalized_space_type: open_focus
+                          seated: 1
+                        - id: 63584e0184e36d00352450d8
+                          capacity: 1
+                          normalized_space_type: open_focus
+                          seated: 1
+                        - id: 63584e0184e36d00352450d9
+                          capacity: 6
+                          normalized_space_type: open_collab
+                          seated: 5
+                        unseated:
+                          enclosed_collab: 0
+                          enclosed_focus: 0
+                          open_focus: 0
+                          open_collab: 1
+                    meta: {}
+                    person_counts:
+                    - 10
+                    - 13
+                    model_version: monte-dist-4.3.1
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+      parameters:
+      - in: header
+        name: Content-Type
+        schema:
+          type: string
+          default: application/geo+json
+        required: true
+      operationId: post_predict-space-usage
+      requestBody:
+        content:
+          application/geo+json:
+            schema:
+              type: object
+              properties: {}
+            examples:
+              'Example: Multiple Person Counts':
+                summary: 'Example: Multiple Person Counts'
+                value:
+                  person_counts:
+                  - 10
+                  - 13
+                  type: FeatureCollection
+                  features:
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.55364893892498
+                          - 45.49486993647466
+                        - - -73.55363974022207
+                          - 45.494866436003335
+                        - - -73.55362414242448
+                          - 45.49486053520767
+                        - - -73.55361354406915
+                          - 45.494874237252944
+                        - - -73.55364893892498
+                          - 45.49486993647466
+                    properties:
+                      id: 63584e0184e36d00352450d4
+                      capacity: 4
+                      normalized_space_type: enclosed_collab
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.5537
+                          - 45.4949
+                        - - -73.55369
+                          - 45.49489
+                        - - -73.55368
+                          - 45.4949
+                        - - -73.5537
+                          - 45.4949
+                    properties:
+                      id: 63584e0184e36d00352450d6
+                      capacity: 1
+                      normalized_space_type: enclosed_focus
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.55375
+                          - 45.49492
+                        - - -73.55374
+                          - 45.49491
+                        - - -73.55373
+                          - 45.49492
+                        - - -73.55375
+                          - 45.49492
+                    properties:
+                      id: 63584e0184e36d00352450d7
+                      capacity: 1
+                      normalized_space_type: open_focus
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.5538
+                          - 45.49494
+                        - - -73.55379
+                          - 45.49493
+                        - - -73.55378
+                          - 45.49494
+                        - - -73.5538
+                          - 45.49494
+                    properties:
+                      id: 63584e0184e36d00352450d8
+                      capacity: 1
+                      normalized_space_type: open_focus
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.55385
+                          - 45.49496
+                        - - -73.55383
+                          - 45.49494
+                        - - -73.5538
+                          - 45.49495
+                        - - -73.55382
+                          - 45.49497
+                        - - -73.55385
+                          - 45.49496
+                    properties:
+                      id: 63584e0184e36d00352450d9
+                      capacity: 6
+                      normalized_space_type: open_collab
+      summary: Predict Space Usage
+      tags:
+      - Predict
+  /predict/space_shortage:
+    post:
+      description: Given a geojson of spaces on a floor, this endpoint would return the predicted number of people in attendance at which point a meaningful number of people would be unable to find a space to work.
+      responses:
+        '200':
+          description: ''
+      parameters:
+      - in: header
+        name: Content-Type
+        schema:
+          type: string
+          default: application/geo+json
+        required: true
+      requestBody:
+        content:
+          application/geo+json:
+            schema:
+              type: object
+              properties: {}
+            examples:
+              'Example: Shortage Percentage':
+                summary: 'Example: Shortage Percentage'
+                value:
+                  shortage_pct: 0.05
+                  type: FeatureCollection
+                  features:
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.55364893892498
+                          - 45.49486993647466
+                        - - -73.55363974022207
+                          - 45.494866436003335
+                        - - -73.55362414242448
+                          - 45.49486053520767
+                        - - -73.55361354406915
+                          - 45.494874237252944
+                        - - -73.55364893892498
+                          - 45.49486993647466
+                    properties:
+                      id: 63584e0184e36d00352450d4
+                      capacity: 4
+                      normalized_space_type: enclosed_collab
+      operationId: post_predict-space-shortage
+      summary: Predict Space Shortage
+      tags:
+      - Predict
+  /predict/normalized_space_type_distribution:
+    post:
+      description: Returns occupancy distribution histograms for spaces on a floor, grouped by normalized space type and capacity tier.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              examples:
+                OK:
+                  summary: OK
+                  value:
+                    data:
+                    - id: predict-normalized-space-type-dist-50
+                      type: normalized_space_type_distribution_prediction
+                      attributes:
+                        person_count: 50
+                        normalized_space_types:
+                          enclosed_collab:
+                          - capacity: 4
+                            spaces:
+                            - id: 63584e0184e36d00352450d4
+                              name: Hudson
+                            - id: 63584e0184e36d00352450d5
+                              name: Thames
+                            histogram:
+                            - person_count: 0
+                              pct: 15.5
+                            - person_count: 1
+                              pct: 25
+                            - person_count: 2
+                              pct: 35
+                            - person_count: 3
+                              pct: 18.5
+                            - person_count: 4
+                              pct: 6
+                    meta:
+                      person_counts:
+                      - 50
+                      n_runs: 1000
+                      model_version: monte-dist-4.3.1
+      parameters: []
+      operationId: post_predict-normalized-space-type-distribution
+      requestBody:
+        content:
+          application/geo+json:
+            schema:
+              type: object
+              properties: {}
+            examples:
+              12 Person Count:
+                summary: 12 Person Count
+                value:
+                  person_count: 12
+                  type: FeatureCollection
+                  features:
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.55364893892498
+                          - 45.49486993647466
+                        - - -73.55363974022207
+                          - 45.494866436003335
+                        - - -73.55362414242448
+                          - 45.49486053520767
+                        - - -73.55361354406915
+                          - 45.494874237252944
+                        - - -73.55364893892498
+                          - 45.49486993647466
+                    properties:
+                      id: 63584e0184e36d00352450d4
+                      capacity: 4
+                      normalized_space_type: enclosed_collab
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.5537
+                          - 45.4949
+                        - - -73.55369
+                          - 45.49489
+                        - - -73.55368
+                          - 45.4949
+                        - - -73.5537
+                          - 45.4949
+                    properties:
+                      id: 63584e0184e36d00352450d6
+                      capacity: 1
+                      normalized_space_type: enclosed_focus
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.55375
+                          - 45.49492
+                        - - -73.55374
+                          - 45.49491
+                        - - -73.55373
+                          - 45.49492
+                        - - -73.55375
+                          - 45.49492
+                    properties:
+                      id: 63584e0184e36d00352450d7
+                      capacity: 1
+                      normalized_space_type: open_focus
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.5538
+                          - 45.49494
+                        - - -73.55379
+                          - 45.49493
+                        - - -73.55378
+                          - 45.49494
+                        - - -73.5538
+                          - 45.49494
+                    properties:
+                      id: 63584e0184e36d00352450d8
+                      capacity: 1
+                      normalized_space_type: open_focus
+                  - type: Feature
+                    geometry:
+                      type: Polygon
+                      coordinates:
+                      - - - -73.55385
+                          - 45.49496
+                        - - -73.55383
+                          - 45.49494
+                        - - -73.5538
+                          - 45.49495
+                        - - -73.55382
+                          - 45.49497
+                        - - -73.55385
+                          - 45.49496
+                    properties:
+                      id: 63584e0184e36d00352450d9
+                      capacity: 6
+                      normalized_space_type: open_collab
+      summary: Predict Normalized Space Type Distribution
+      tags:
+      - Predict
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: header
+      name: vs-api-key
+      x-default: ''
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true

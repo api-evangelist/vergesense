@@ -1,0 +1,304 @@
+openapi: 3.2.0
+info:
+  title: vergesense-api Buildings API
+  version: '2021-03-29'
+servers:
+- url: https://api.vergesense.com
+security:
+- sec0: []
+tags:
+- name: Buildings
+paths:
+  /buildings:
+    get:
+      summary: /buildings
+      description: Get a list of buildings that VergeSense has data on.
+      operationId: buildings-1
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "[\n  {\n    \"name\": \"HQ 1\",\n    \"building_ref_id\": \"HQ1\",\n    \"address\": \"925 Commonwealth Avenue, Boston, MA 02215\",\n    \"working_hours\": {\n  \t\t\"from\": 8,\n      \"to\": 18\n  \t},\n    \"timezone\": \"America/New_York\"\n  }\n]"
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: HQ 1
+                    building_ref_id:
+                      type: string
+                      example: HQ1
+                    address:
+                      type: string
+                      example: 925 Commonwealth Avenue, Boston, MA 02215
+                    working_hours:
+                      type: object
+                      properties:
+                        from:
+                          type: integer
+                          example: 8
+                          default: 0
+                        to:
+                          type: integer
+                          example: 18
+                          default: 0
+                    timezone:
+                      type: string
+                      example: America/New_York
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Buildings
+  /buildings/{building_ref_id}:
+    get:
+      summary: /buildings/:building_ref_id
+      description: Get information about the hierarchy of a building, down to the VergeSense sensor level.
+      operationId: buildings-2
+      parameters:
+      - name: floor_ref_id
+        in: query
+        schema:
+          type: string
+      - name: building_ref_id
+        in: path
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"building_ref_id\": \"HQ1\",\n  \"capacity\": 84,\n  \"minimum_social_distance\": 2.0,\n  \"working_hours\": {\n  \t\"from\": 8,\n    \"to\": 18\n  },\n  \"floors\": [\n    {\n      \"name\": \"Floor 1\",\n      \"floor_ref_id\": \"FL1\",\n      \"capacity\": 84,\n      \"max_capacity\": 60,\n      \"spaces\": [\n        {\n          \"name\": \"Conference Room 0721\",\n          \"space_ref_id\": \"CR_0721\",\n          \"space_type\": \"conference_room\",\n          \"capacity\": 4,\n          \"max_capacity\": 3,\n          \"sensors\": [\n            {\n              \"id\": \"L_000018\",\n              \"partitions\": [\n                {\n                  \"id\": \"L_000018/321\"\n                }\n              ]\n            }\n          ],\n          \"geometry\": {\n            \"type\": \"Polygon\",\n            \"coordinates\": [\n              [\n                [\n                  93.850772,\n                  44.676952\n                ],\n                [\n                  93.850739,\n                  44.676929\n                ],\n                [\n                  93.850718,\n                  44.67695\n                ],\n                [\n                  93.850751,\n                  44.676973\n                ],\n                [\n                  93.850772,\n                  44.676952\n                ],\n                [\n                  93.850772,\n                  44.676952\n                ]\n              ]\n            ]\n          },\n          \"space_groups\": [\n            {\n            \t\"name\": \"Finance\"\n            },\n            {\n            \t\"name\": \"Dedicated Space\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
+              schema:
+                type: object
+                properties:
+                  building_ref_id:
+                    type: string
+                    example: HQ1
+                  capacity:
+                    type: integer
+                    example: 84
+                    default: 0
+                  minimum_social_distance:
+                    type: integer
+                    example: 2
+                    default: 0
+                  working_hours:
+                    type: object
+                    properties:
+                      from:
+                        type: integer
+                        example: 8
+                        default: 0
+                      to:
+                        type: integer
+                        example: 18
+                        default: 0
+                  floors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: Floor 1
+                        floor_ref_id:
+                          type: string
+                          example: FL1
+                        capacity:
+                          type: integer
+                          example: 84
+                          default: 0
+                        max_capacity:
+                          type: integer
+                          example: 60
+                          default: 0
+                        spaces:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                example: Conference Room 0721
+                              space_ref_id:
+                                type: string
+                                example: CR_0721
+                              space_type:
+                                type: string
+                                example: conference_room
+                              capacity:
+                                type: integer
+                                example: 4
+                                default: 0
+                              max_capacity:
+                                type: integer
+                                example: 3
+                                default: 0
+                              sensors:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: L_000018
+                                    partitions:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          id:
+                                            type: string
+                                            example: L_000018/321
+                              geometry:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                    example: Polygon
+                                  coordinates:
+                                    type: array
+                                    items:
+                                      type: array
+                                      items:
+                                        type: array
+                                        items:
+                                          type: number
+                                          example: 93.850772
+                                          default: 0
+                              space_groups:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: string
+                                      example: Finance
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Buildings
+  /buildings/{building_ref_id}/history:
+    get:
+      summary: /buildings/:building_ref_id/history
+      description: ''
+      operationId: buildingsbuilding_ref_idhistory
+      parameters:
+      - name: building_ref_id
+        in: path
+        schema:
+          type: string
+        required: true
+      - name: start_timestamp
+        in: query
+        description: 'ISO8601 timestamp. Filter results where the `timestamp` is equal or greater than this value. Ex: `2021-10-01T08:00:00Z`'
+        required: true
+        schema:
+          type: string
+      - name: end_timestamp
+        in: query
+        description: 'ISO8601 timestamp. Filter results where the `timestamp` is less than this value. The time range cannot be greater than 24 hours. Ex: `2021-10-01T09:00:00Z`'
+        required: true
+        schema:
+          type: string
+      - name: floor_ref_id
+        in: query
+        schema:
+          type: string
+      - name: space_ref_id
+        in: query
+        schema:
+          type: string
+      - name: space_type
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "[\n  {\n    \"floor_ref_id\": \"FLOOR-123\",\n    \"space_ref_id\": \"SPACE-123\",\n    \"history\": [\n      {\n        \"timestamp\": \"2020-02-18T20:34:14Z\",\n        \"count\": 1,\n        \"signs_of_life\": null\n      },\n      {\n        \"timestamp\": \"2020-02-18T20:44:18Z\",\n        \"count\": 2,\n        \"signs_of_life\": true\n      },\n      {\n        \"timestamp\": \"2020-02-18T20:54:23Z\",\n        \"count\": 1,\n        \"signs_of_life\": true\n      }\n    ]\n  }\n]\n"
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    floor_ref_id:
+                      type: string
+                      example: FLOOR-123
+                    space_ref_id:
+                      type: string
+                      example: SPACE-123
+                    history:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          timestamp:
+                            type: string
+                            example: '2020-02-18T20:34:14Z'
+                          count:
+                            type: integer
+                            example: 1
+                            default: 0
+                          signs_of_life: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"errors\": [\"Cannot exceed maximum time range of 24hrs\"]\n}\n"
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Cannot exceed maximum time range of 24hrs
+      deprecated: false
+      tags:
+      - Buildings
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: header
+      name: vs-api-key
+      x-default: ''
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true

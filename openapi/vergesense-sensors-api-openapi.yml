@@ -1,0 +1,202 @@
+openapi: 3.2.0
+info:
+  title: vergesense-api Sensors API
+  version: '2021-03-29'
+servers:
+- url: https://api.vergesense.com
+security:
+- sec0: []
+tags:
+- name: Sensors
+paths:
+  /sensors:
+    get:
+      summary: /sensors
+      description: Get a list of all sensors in the account.
+      operationId: sensors-1
+      parameters:
+      - name: filter
+        in: query
+        description: Only return sensors that are a child of this zone id.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"sensors\": [\n    {\n      \"id\": \"sensor1\",\n      \"path\": \"/1/2/\",\n      \"partitions\": [],\n      \"wakeup\": 8,\n      \"sleep\": 18,\n      \"polling_frequency\": 600,\n      \"timezone\": \"America/Los_Angeles\"\n    },\n    {\n      \"id\": \"sensor2\",\n      \"path\": \"/1/2/\",\n      \"partitions\": [\n        \"sensor1/1\"\n      ],\n      \"wakeup\": 8,\n      \"sleep\": 18,\n      \"polling_frequency\": 600,\n      \"timezone\": \"America/Los_Angeles\"\n    }\n  ]\n}"
+              schema:
+                type: object
+                properties:
+                  sensors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: sensor1
+                        path:
+                          type: string
+                          example: /1/2/
+                        partitions:
+                          type: array
+                        wakeup:
+                          type: integer
+                          example: 8
+                          default: 0
+                        sleep:
+                          type: integer
+                          example: 18
+                          default: 0
+                        polling_frequency:
+                          type: integer
+                          example: 600
+                          default: 0
+                        timezone:
+                          type: string
+                          example: America/Los_Angeles
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Sensors
+  /sensors/state:
+    get:
+      summary: /sensors/state
+      description: Get the current state of sensors.
+      operationId: sensorsstate
+      parameters:
+      - name: ids
+        in: query
+        description: Comma separated sensor ids. If this is omitted, all sensors in the account will be returned.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"sensors\": [\n    {\n      \"id\": \"sensor1\",\n      \"ref_id\": null,\n      \"count\": 5,\n      \"battery_level\": \"ok\",\n      \"timestamp\": \"2018-01-10T23:30:28Z\",\n      \"partitionCounts\": {\n        \"sensor1/1\": 5\n      },\n      \"firmwareVersion\": \"a2193c36\"\n    },\n    {\n      \"id\": \"sensor2\",\n      \"ref_id\": null,\n      \"count\": 3,\n      \"battery_level\": \"low\",\n      \"timestamp\": \"2018-01-10T23:30:28Z\",\n      \"partitionCounts\": {},\n      \"firmwareVersion\": \"a2193c36\"\n    }\n  ]\n}"
+              schema:
+                type: object
+                properties:
+                  sensors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: sensor1
+                        ref_id: {}
+                        count:
+                          type: integer
+                          example: 5
+                          default: 0
+                        battery_level:
+                          type: string
+                          example: ok
+                        timestamp:
+                          type: string
+                          example: '2018-01-10T23:30:28Z'
+                        partitionCounts:
+                          type: object
+                          properties:
+                            sensor1/1:
+                              type: integer
+                              example: 5
+                              default: 0
+                        firmwareVersion:
+                          type: string
+                          example: a2193c36
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Sensors
+  /sensors/history:
+    get:
+      summary: /sensors/history
+      description: Get the history of sensors.
+      operationId: sensorshistory
+      parameters:
+      - name: start
+        in: query
+        description: ISO 8601 formatted start date for the query.
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: end
+        in: query
+        description: ISO 8601 formatted end date for the query.
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: ids
+        in: query
+        description: Comma separated sensor ids. If this is omitted, all sensors in the account will be returned.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: '2018-01-10T23:30:28Z,sensor1,0
+
+                    2018-01-10T23:30:28Z,sensor2,1
+
+                    2018-01-15T23:30:28Z,sensor1,0
+
+                    2018-01-15T23:30:28Z,sensor2,1'
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Sensors
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: header
+      name: vs-api-key
+      x-default: ''
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true

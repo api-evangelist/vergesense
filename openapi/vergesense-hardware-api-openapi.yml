@@ -1,0 +1,123 @@
+openapi: 3.2.0
+info:
+  title: vergesense-api Hardware API
+  version: '2021-03-29'
+servers:
+- url: https://api.vergesense.com
+security:
+- sec0: []
+tags:
+- name: Hardware
+paths:
+  /hardware/sensors:
+    get:
+      summary: /hardware/sensors
+      description: Fetch all sensors.Response conforms to the JSON API spec https://jsonapi.org/.Responses are limited to `1,000` sensors after which pagination will take place.
+      operationId: hardware_sensors
+      parameters:
+      - name: vs-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        description: Requested page number. Only used when pagination is applicable.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: building_id
+        in: query
+        description: Filter sensors based on the associated unique building_id.
+        schema:
+          type: integer
+          format: int32
+      - name: building_ref_id
+        in: query
+        description: Filter sensors based on the associated building_ref_id.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n\t\"data\": [\n    {\n    \t\"id\": \"W00-123\",\n      \"type\": \"sensor\",\n      \"attributes\": {\n      \t\"model\": \"L208\",\n        \"firmware\": \"1d590897\",\n        \"mac_address\": \"80:1F:12:D8:00:9J\",\n        \"state\": \"operational\",\n        \"network\": {\n          \"status\": \"online\"\n        },\n        \"battery\": {\n          \"status\": \"healthy\"\n        }\n      },\n      \"relationships\": {\n      \t\"floor\": {\n        \t\"data\": {\n          \t\"id\": \"3021081\",\n            \"type\": \"floor\"\n          }\n        },\n      \t\"building\": {\n        \t\"data\": {\n          \t\"id\": \"411081\",\n            \"type\": \"building\"\n          }\n        },\n      }\n    }\n  ],\n  \"included\": [\n    {\n    \t\"id\": \"3021081\",\n      \"type\": \"floor\",\n      \"attributes\": {\n      \t\"name\": \"Floor 1\",\n        \"floor_ref_id\": \"F1\"\n      }\n    },\n    {\n    \t\"id\": \"411081\",\n      \"type\": \"building\",\n      \"attributes\": {\n      \t\"name\": \"Building 1\",\n        \"building_ref_id\": \"B1\"\n      }\n    }\n  ],\n  \"links\": {\n  \t\"next\": \"/hardware/sensors?page[number]=2\",\n    \"prev\": null\n  }\n}"
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Hardware
+  /hardware/gateways:
+    get:
+      summary: /hardware/gateways
+      description: Fetch all gateways. Response conforms to the JSON API spec https://jsonapi.org/.Responses are limited to `1,000` gateway after which pagination will take place.
+      operationId: hardware_gateways
+      parameters:
+      - name: vs-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        description: Requested page number. Only used when pagination is applicable.
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: building_id
+        in: query
+        description: Filter gateways based on the associated unique building_id.
+        schema:
+          type: integer
+          format: int32
+      - name: building_ref_id
+        in: query
+        description: Filter gateways based on the associated building_ref_id.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n\t\"data\": [\n    {\n    \t\"id\": \"C0300A2025-00001\",\n      \"type\": \"gateway\",\n      \"attributes\": {\n      \t\"model\": \"rigado\",\n        \"firmware\": \"5.4.4.0\",\n        \"mac_address\": \"0A:00:27:08:J8:10\",\n        \"network\": {\n          \"status\": \"offline\"\n        }\n      },\n      \"relationships\": {\n      \t\"floor\": {\n        \t\"data\": {\n          \t\"id\": \"3021081\",\n            \"type\": \"floor\"\n          }\n        },\n      \t\"building\": {\n        \t\"data\": {\n          \t\"id\": \"411081\",\n            \"type\": \"building\"\n          }\n        },\n      }\n    }\n  ],\n  \"included\": [\n    {\n    \t\"id\": \"3021081\",\n      \"type\": \"floor\",\n      \"attributes\": {\n      \t\"name\": \"Floor 1\",\n        \"floor_ref_id\": \"F1\"\n      }\n    },\n    {\n    \t\"id\": \"411081\",\n      \"type\": \"building\",\n      \"attributes\": {\n      \t\"name\": \"Building 1\",\n        \"building_ref_id\": \"B1\"\n      }\n    }\n  ],\n  \"links\": {\n  \t\"next\": \"/hardware/sensors?page[number]=2\",\n    \"prev\": null\n  }\n}"
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      tags:
+      - Hardware
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: header
+      name: vs-api-key
+      x-default: ''
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true
