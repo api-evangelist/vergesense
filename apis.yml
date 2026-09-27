@@ -231,9 +231,11 @@ apis:
   humanURL: https://vergesense.readme.io/reference/reference-getting-started
   baseURL: https://api.vergesense.com
   tags:
+  - Spaces
   - Space
   tags_raw:
   - Spaces
+  - Space
   properties:
   - type: OpenAPI
     url: openapi/vergesense-spaces-api-openapi.yml
