@@ -309,6 +309,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/vergesense-capability-edges.yml
+  name: VergeSense Business Capability Map
 - type: Overlay
   url: overlays/vergesense-api-overlay.yaml
 - type: Website
