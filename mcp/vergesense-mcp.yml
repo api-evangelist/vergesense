@@ -66,3 +66,16 @@ other_mcp_surfaces:
   note: A documentation-search MCP endpoint provisioned by the ReadMe platform, not the VergeSense product
     API. Recorded for completeness; it is NOT the endpoint this artifact points at.
 checked: '2026-09-02'
+rfc9728:
+  endpoint: https://mcp.vergesense.com/mcp
+  metadata_url: https://mcp.vergesense.com/.well-known/oauth-protected-resource/mcp
+  discovered_via: WWW-Authenticate resource_metadata on an anonymous POST initialize
+  fetched: '2026-09-25'
+  http_status: 200
+  content_type: application/json
+  document:
+    resource: https://mcp.vergesense.com/mcp
+    authorization_servers:
+    - https://vergesense.auth0.com/
+    bearer_methods_supported:
+    - header
