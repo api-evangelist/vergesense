@@ -64,20 +64,144 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-VergeSense is the occupancy intelligence platform for corporate real estate and workplace teams,
-combining first-party AI sensors with a cloud analytics platform (Meridian, including a Large Spatial
-Model) to measure how buildings, floors, neighborhoods and individual spaces are actually used.
+VergeSense is the occupancy intelligence platform for corporate real estate and workplace teams. It combines first-party AI-powered area, entryway and infinity sensors with a cloud analytics platform (Meridian, including a Large Spatial Model) to measure how buildings, floors, neighborhoods and individual spaces are actually used. The public VergeSense API is a key-authenticated REST surface at api.vergesense.com covering buildings, floors, spaces, space types, detections, threshold crossings, hourly and aggregate occupancy metrics, hardware inventory (sensors and gateways), a Predict API built on the Large Spatial Model, and a fully managed webhook subscription surface that pushes space_report, space_availability and motion_detected events to customer endpoints. Collection responses follow the JSON:API specification, timestamps are ISO 8601, and the API is date-versioned (YYYY-MM-DD) via the vs-version request header. VergeSense also operates an OAuth-protected remote MCP server at mcp.vergesense.com for agent access.
 
-The public VergeSense API is a key-authenticated REST surface at `api.vergesense.com` — 36 operations
-covering buildings, floors, spaces, space types, detections, threshold crossings, hourly and
-aggregate occupancy metrics, hardware inventory, a Large Spatial Model Predict API, and a
-self-service webhook subscription surface pushing `space_report`, `space_availability` and
-`motion_detected` events. Collection responses follow the JSON:API specification, timestamps are ISO
-8601, and the API is date-versioned via the `vs-version` header. VergeSense also operates an
-OAuth-protected remote MCP server at `mcp.vergesense.com`.
+**Areas:** Occupancy Intelligence · Workplace Analytics · Corporate Real Estate · PropTech · IoT Sensors · Building Data · Space Utilization · Facilities Management · Smart Buildings · Webhook · MCP · JSON:API
 
-- Website — https://www.vergesense.com/
-- Developer docs — https://vergesense.readme.io/
-- API reference — https://vergesense.readme.io/reference/reference-getting-started
-- Changelog — https://headwayapp.co/vergesense-changelog/
-- Postman collection — https://documenter.getpostman.com/view/6835591/2s9Y5Wx3QL
+## VergeSense on APIs.io
+
+Everything profiled for VergeSense is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/vergesense/](https://apis.io/providers/vergesense/)** — or go straight to one of the APIs or properties below.
+
+### APIs (7)
+
+- [VergeSense Buildings API](https://apis.io/apis/vergesense/vergesense-buildings-api/) — The Buildings API from VergeSense — 3 operation(s) for buildings.
+- [VergeSense Hardware API](https://apis.io/apis/vergesense/vergesense-hardware-api/) — The Hardware API from VergeSense — 2 operation(s) for hardware.
+- [VergeSense Metrics API](https://apis.io/apis/vergesense/vergesense-metrics-api/) — The Metrics API from VergeSense — 13 operation(s) for metrics.
+- [VergeSense Predict API](https://apis.io/apis/vergesense/vergesense-predict-api/) — The Predict API from VergeSense — 3 operation(s) for predict.
+- [VergeSense Sensors API](https://apis.io/apis/vergesense/vergesense-sensors-api/) — The Sensors API from VergeSense — 3 operation(s) for sensors.
+- [VergeSense Spaces API](https://apis.io/apis/vergesense/vergesense-spaces-api/) — The Spaces API from VergeSense — 4 operation(s) for spaces.
+- [VergeSense Webhooks API](https://apis.io/apis/vergesense/vergesense-webhooks-api/) — The Webhooks API from VergeSense — 6 operation(s) for webhooks.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Vergesense Webhooks](https://apis.io/asyncapis/vergesense/vergesense-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [VergeSense MCP Server](https://apis.io/servers/vergesense/vergesense-mcp-server/)
+
+#### Examples (1)
+
+Example requests and responses.
+
+- [Vergesense Api Examples](https://apis.io/examples/vergesense/vergesense-api-examples/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Vergesense Api Overlay](https://apis.io/overlays/vergesense/vergesense-api-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Vergesense Authentication](https://apis.io/security/vergesense/vergesense-authentication/)
+- [Vergesense Domain Security](https://apis.io/security/vergesense/vergesense-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Vergesense Scopes](https://apis.io/scopes/vergesense/vergesense-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Vergesense Plans Pricing](https://apis.io/plans/vergesense/vergesense-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Vergesense Rate Limits](https://apis.io/rate-limits/vergesense/vergesense-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.vergesense.com/)
+- [Documentation](https://vergesense.readme.io/reference/reference-getting-started)
+- [Getting started](https://vergesense.readme.io/reference/reference-getting-started)
+- [API reference](https://vergesense.readme.io/reference/buildings-1)
+- [Sign up](https://cloud.vergesense.com/)
+- [Support](https://support.vergesense.com/hc/en-us)
+- [Changelog](https://headwayapp.co/vergesense-changelog/)
+- [Blog](https://www.vergesense.com/resources/blog)
+- [Terms of service](https://www.vergesense.com/legal)
+- [Privacy policy](https://www.vergesense.com/privacy-policy)
+- [GitHub](https://github.com/vergesense)
+
+## API Evangelist rating
+
+**Kin Score 51.8** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 63.2 |
+| Contract governance | 18.2 |
+| Operational transparency | 55.3 |
+| Developer ergonomics | 63.7 |
+| Access clarity | 21.1 |
+
+**Agent readiness 50.9** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | — |
+
+**Regulatory alignment 34.3** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/vergesense/](https://apis.io/providers/vergesense/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for VergeSense: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/vergesense/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
